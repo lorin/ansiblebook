@@ -1,0 +1,6 @@
+---
+- name: print out operating system
+  hosts: all
+  gather_facts: True
+  tasks:
+  - debug: var=ansible_distribution
