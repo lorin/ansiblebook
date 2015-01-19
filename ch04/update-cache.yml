@@ -1,0 +1,10 @@
+---
+- name: show return value of apt module
+  hosts: server1
+  gather_facts: False
+  sudo: True
+  tasks:
+    - name: install nginx
+      apt: update_cache=yes
+      register: result
+    - debug: var=result
