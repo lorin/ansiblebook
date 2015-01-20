@@ -1,0 +1,6 @@
+- name: test of ansible vault
+  hosts: localhost
+  vars_files:
+    - secrets.yml
+  tasks:
+    - debug: var=secret_key
