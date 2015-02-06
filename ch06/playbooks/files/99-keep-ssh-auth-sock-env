@@ -1,0 +1,1 @@
+Defaults>root env_keep+=SSH_AUTH_SOCK
