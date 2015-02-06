@@ -1,3 +1,4 @@
 .vagrant
 ch05/venv
 ch05/myproject
+ch06/playbooks/secrets.yml

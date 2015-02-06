@@ -1,0 +1,145 @@
+---
+- name: Deploy mezzanine
+  hosts: web
+  vars:
+    user: "{{ ansible_ssh_user }}"
+    proj_name: mezzanine-example
+    venv_home: "{{ ansible_env.HOME }}"
+    venv_path: "{{ venv_home }}/{{ proj_name }}"
+    proj_dirname: project
+    proj_path: "{{ venv_path }}/{{ proj_dirname }}"
+    reqs_path: requirements.txt
+    manage: "{{ python }} {{ proj_path }}/manage.py"
+    live_hostname: 192.168.33.10.xip.io
+    domains:
+      - 192.168.33.10.xip.io
+      - www.192.168.33.10.xip.io
+    repo_url: git@github.com:lorin/mezzanine-example.git
+    gunicorn_port: 8000
+    locale: en_US.UTF-8
+    # Variables below don't appear in Mezannine's fabfile.py
+    # but I've added them for convenience
+    conf_path: /etc/nginx/conf
+    ssl_enabled: True
+    python: "{{ venv_path }}/bin/python"
+    database_name: "{{ proj_name }}"
+    database_user: "{{ proj_name }}"
+    database_host: localhost
+    database_port: 5432
+    gunicorn_proc_name: mezzanine
+  vars_files:
+    - secrets.yml
+  tasks:
+    - name: install apt packages
+      apt: pkg={{ item }} update_cache=yes cache_valid_time=3600
+      sudo: True
+      with_items:
+        - git
+        - libjpeg-dev
+        - libpq-dev
+        - memcached
+        - nginx
+        - postgresql
+        - python-dev
+        - python-pip
+        - python-psycopg2
+        - python-setuptools
+        - python-virtualenv
+        - supervisor
+    - name: check out the repository on the host
+      git: repo={{ repo_url }} dest={{ proj_path }} accept_hostkey=yes
+    - name: install required python packages
+      pip: name={{ item }} virtualenv={{ venv_path }}
+      with_items:
+        - gunicorn
+        - setproctitle
+        - south
+        - psycopg2
+        - django-compressor
+        - python-memcached
+    - name: install requirements.txt
+      pip: requirements={{ proj_path }}/{{ reqs_path }} virtualenv={{ venv_path }}
+    - name: create a user
+      postgresql_user:
+        name: "{{ database_user }}"
+        password: "{{ db_pass }}"
+      sudo: True
+      sudo_user: postgres
+    - name: create the database
+      postgresql_db:
+        name: "{{ database_name }}"
+        owner: "{{ database_user }}"
+        encoding: UTF8
+        lc_ctype: "{{ locale }}"
+        lc_collate: "{{ locale }}"
+        template: template0
+      sudo: True
+      sudo_user: postgres
+    - name: generate the settings file
+      template: src=templates/local_settings.py.j2 dest={{ proj_path }}/local_settings.py
+    - name: sync the database, apply migrations, collect static content
+      django_manage:
+        command: "{{ item }}"
+        app_path: "{{ proj_path }}"
+        virtualenv: "{{ venv_path }}"
+      with_items:
+        - syncdb
+        - migrate
+        - collectstatic
+    - name: set the site id
+      script: scripts/setsite.py
+      environment:
+        PATH: "{{ venv_path }}/bin"
+        PROJECT_DIR: "{{ proj_path }}"
+        WEBSITE_DOMAIN: "{{ live_hostname }}"
+    - name: set the admin password
+      script: scripts/setadmin.py
+      environment:
+        PATH: "{{ venv_path }}/bin"
+        PROJECT_DIR: "{{ proj_path }}"
+        ADMIN_PASSWORD: "{{ admin_pass }}"
+    - name: set the gunicorn config file
+      template: src=templates/gunicorn.conf.py.j2 dest={{ proj_path }}/gunicorn.conf.py
+    - name: set the supervisor config file
+      template: src=templates/supervisor.conf.j2 dest=/etc/supervisor/conf.d/mezzanine.conf
+      sudo: True
+      notify: restart supervisor
+    - name: set the nginx config file
+      template: src=templates/nginx.conf.j2 dest=/etc/nginx/sites-available/mezzanine.conf
+      notify: restart nginx
+      sudo: True
+    - name: enable the nginx config file
+      file:
+        src: /etc/nginx/sites-available/mezzanine.conf
+        dest: /etc/nginx/sites-enabled/mezzanine.conf
+        state: link
+      notify: restart nginx
+      sudo: True
+    - name: remove the default nginx config file
+      file: path=/etc/nginx/sites-enabled/default state=absent
+      notify: restart nginx
+      sudo: True
+    - name: ensure config path exists
+      file: path={{ conf_path }} state=directory
+      sudo: True
+      when: ssl_enabled
+    - name: create ssl certificates
+      command: >
+        openssl req -new -x509 -nodes -out {{ proj_name }}.crt
+        -keyout {{ proj_name }}.key -subj '/CN={{ domains[0] }}' -days 3650
+        chdir={{ conf_path }}
+        creates={{ conf_path }}/{{ proj_name }}.crt
+      sudo: True
+      when: ssl_enabled
+      notify: restart nginx
+    - name: install poll twitter cron job
+      cron: name="poll twitter" minute="*/5" user={{ user }} job="{{ manage }} poll_twitter"
+
+  handlers:
+    - name: restart supervisor
+      supervisorctl: name=gunicorn_mezzanine state=restarted
+      sudo: True
+    - name: restart nginx
+      service: name=nginx state=restarted
+      sudo: True
+
