@@ -6,6 +6,18 @@
     - libpq-dev
     - postgresql
     - python-psycopg2
+- name: copy configuration file
+  copy: >
+    src=postgresql.conf dest=/etc/postgresql/9.3/main/postgresql.conf
+    owner=postgres group=postgres mode=0644
+  sudo: True
+  notify: restart postgres
+- name: copy client authentication configuration file
+  copy: >
+    src=pg_hba.conf dest=/etc/postgresql/9.3/main/pg_hba.conf
+    owner=postgres group=postgres mode=0640
+  sudo: True
+  notify: restart postgres
 - name: create a user
   postgresql_user:
     name: "{{ database_user }}"
