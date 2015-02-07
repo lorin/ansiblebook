@@ -1,0 +1,21 @@
+---
+- name: deploy postgres on vagrant
+  hosts: db
+  vars_files:
+    - secrets.yml
+  roles:
+    - role: database
+      database_name: "{{ mezzanine_proj_name }}"
+      database_user: "{{ mezzanine_proj_name }}"
+
+- name: deploy mezzanine on vagrant
+  hosts: web
+  vars_files:
+    - secrets.yml
+  roles:
+    - role: mezzanine
+      database_host: "{{ hostvars.db.ansible_eth1.ipv4.address }}"
+      live_hostname: 192.168.33.10.xip.io
+      domains:
+        - 192.168.33.10.xip.io
+        - www.192.168.33.10.xip.io

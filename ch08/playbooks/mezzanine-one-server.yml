@@ -1,0 +1,14 @@
+---
+- name: deploy mezzanine on vagrant
+  hosts: web
+  vars_files:
+    - secrets.yml
+  roles:
+    - role: database
+      database_name: "{{ mezzanine_proj_name }}"
+      database_user: "{{ mezzanine_proj_name }}"
+    - role: mezzanine
+      live_hostname: 192.168.33.10.xip.io
+      domains:
+        - 192.168.33.10.xip.io
+        - www.192.168.33.10.xip.io
