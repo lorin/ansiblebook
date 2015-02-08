@@ -4,7 +4,7 @@
   vars:
     region: us-west-1
     instance_type: t2.micro
-    count: 3
+    count: 1
   tasks:
   - name: ec2 keypair
     ec2_key: name=mykey key_material="{{ item }}" region={{ region }}
@@ -50,7 +50,7 @@
       image: "{{ ubuntu_image.ami }}"
       instance_type: "{{ instance_type }}"
       key_name: mykey
-      group: [outbound, web, ssh]
+      group: [web, ssh, outbound]
       instance_tags: { Name: ansiblebook, type: web, env: production }
       exact_count: "{{ count }}"
       count_tag: { type: web }
