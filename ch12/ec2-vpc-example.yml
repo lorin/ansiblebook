@@ -1,0 +1,87 @@
+---
+- name: launch webservers into a specific vpc
+  hosts: localhost
+  vars:
+    instance_type: t2.micro
+    count: 1
+  tasks:
+  - name: create a vpc
+    ec2_vpc:
+      internet_gateway: True
+      resource_tags: { env: production }
+      cidr_block: 10.0.0.0/16
+      subnets:
+        - cidr: 10.0.0.0/24
+          resource_tags:
+            env: production
+            tier: web
+        - cidr: 10.0.1.0/24
+          resource_tags:
+            env: production
+            tier: db
+      route_tables:
+        - subnets:
+          - 10.0.0.0/24
+          - 10.0.1.0/24
+          routes:
+          - dest: 0.0.0.0/0
+            gw: igw
+    register: vpc
+  - set_fact: vpc_id={{ vpc.vpc_id }} public_subnet_id={{ vpc.subnets[0].id }}
+  - name: set ec2 keypair
+    ec2_key: name=mykey key_material="{{ item }}"
+    with_file: ~/.ssh/id_rsa.pub
+  - name: web security group
+    ec2_group:
+      name: vpc-web
+      description: allow http and https access
+      vpc_id: "{{ vpc_id }}"
+      rules:
+        - proto: tcp
+          from_port: 80
+          to_port: 80
+          cidr_ip: 0.0.0.0/0
+        - proto: tcp
+          from_port: 443
+          to_port: 443
+          cidr_ip: 0.0.0.0/0
+  - name: ssh security group
+    ec2_group:
+      name: vpc-ssh
+      description: allow ssh access
+      vpc_id: "{{ vpc_id }}"
+      rules:
+        - proto: tcp
+          from_port: 22
+          to_port: 22
+          cidr_ip: 0.0.0.0/0
+  - name: Get the ubuntu trusty AMI
+    ec2_ami_search: distro=ubuntu release=trusty virt=hvm
+    register: ubuntu_image
+  - name: start the instances
+    ec2:
+      image: "{{ ubuntu_image.ami }}"
+      instance_type: "{{ instance_type }}"
+      assign_public_ip: True
+      key_name: mykey
+      group: [vpc-web, vpc-ssh]
+      instance_tags: { type: web, env: production }
+      exact_count: "{{ count }}"
+      count_tag: { type: web }
+      vpc_subnet_id: "{{ vpc.subnets[0].id}}"
+      wait: yes
+    register: ec2
+  - name: add the instance to web and production groups
+    add_host: hostname={{ item.public_dns_name }} groups=web,production
+    with_items: ec2.instances
+    when: item.public_dns_name is defined
+  - name: wait for ssh server to be running
+    wait_for: host={{ item.public_dns_name }} port=22 search_regex=OpenSSH
+    with_items: ec2.instances
+    when: item.public_dns_name is defined
+
+- name: configure webservers
+  hosts: web:&production
+  sudo: True
+  roles:
+    - web
