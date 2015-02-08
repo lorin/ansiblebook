@@ -3,7 +3,7 @@
   hosts: localhost
   vars:
     region: us-west-1
-    instance_type: t1.micro
+    instance_type: t2.micro
     count: 3
   tasks:
   - name: ec2 keypair
@@ -33,8 +33,17 @@
           from_port: 22
           to_port: 22
           cidr_ip: 0.0.0.0/0
+  - name: group to allow outbound connections to the internet
+    ec2_group:
+      name: outbound
+      description: allow outbound connections to the internet
+      region: "{{ region }}"
+      rules_egress:
+        - proto: all
+          type: all
+          cidr_ip: 0.0.0.0/0
   - name: Get the ubuntu trusty AMI
-    ec2_ami_search: distro=ubuntu release=trusty region={{ region }}
+    ec2_ami_search: distro=ubuntu release=trusty virt=hvm region={{ region }}
     register: ubuntu_image
   - name: start the instances
     ec2:
@@ -42,19 +51,19 @@
       image: "{{ ubuntu_image.ami }}"
       instance_type: "{{ instance_type }}"
       key_name: mykey
-      group: [web, ssh]
-      instance_tags: { type: web, env: production }
+      group: [outbound, web, ssh]
+      instance_tags: { Name: ansiblebook, type: web, env: production }
       exact_count: "{{ count }}"
       count_tag: { type: web }
       wait: yes
     register: ec2
   - name: add the instance to web and production groups
     add_host: hostname={{ item.public_dns_name }} groups=web,production
-    with_items: ec2.instances
+    with_items: ec2.tagged_instances
     when: item.public_dns_name is defined
   - name: wait for ssh server to be running
     wait_for: host={{ item.public_dns_name }} port=22 search_regex=OpenSSH
-    with_items: ec2.instances
+    with_items: ec2.tagged_instances
     when: item.public_dns_name is defined
 
 - name: configure webservers
