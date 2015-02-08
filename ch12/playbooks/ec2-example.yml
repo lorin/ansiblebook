@@ -7,12 +7,13 @@
     count: 3
   tasks:
   - name: ec2 keypair
-    ec2_key: name=mykey key_material="{{ item }}"
+    ec2_key: name=mykey key_material="{{ item }}" region={{ region }}
     with_file: ~/.ssh/id_rsa.pub
   - name: web security group
     ec2_group:
       name: web
       description: allow http and https access
+      region: "{{ region }}"
       rules:
         - proto: tcp
           from_port: 80
