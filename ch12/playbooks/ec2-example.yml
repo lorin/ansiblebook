@@ -33,7 +33,7 @@
           from_port: 22
           to_port: 22
           cidr_ip: 0.0.0.0/0
-  - name: group to allow outbound connections to the internet
+  - name: outbound group
     ec2_group:
       name: outbound
       description: allow outbound connections to the internet
