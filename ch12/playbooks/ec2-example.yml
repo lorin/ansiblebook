@@ -9,13 +9,6 @@
   - name: ec2 keypair
     ec2_key: name=mykey key_material="{{ item }}"
     with_file: ~/.ssh/id_rsa.pub
-  - name: group to allow outbound connections to the internet
-    ec2_group:
-      name: outbound
-      rules_egress:
-        - proto: all
-        - type: all
-          cidr_ip: 0.0.0.0/0
   - name: web security group
     ec2_group:
       name: web
