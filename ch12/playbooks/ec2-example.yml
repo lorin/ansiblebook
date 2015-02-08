@@ -41,7 +41,7 @@
       image: "{{ ubuntu_image.ami }}"
       instance_type: "{{ instance_type }}"
       key_name: mykey
-      group: [outbound, web, ssh]
+      group: [web, ssh]
       instance_tags: { type: web, env: production }
       exact_count: "{{ count }}"
       count_tag: { type: web }
