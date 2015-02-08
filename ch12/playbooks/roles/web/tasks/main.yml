@@ -1,0 +1,4 @@
+---
+# tasks file for web
+- name: update apt cache
+  apt: pkg=nginx update_cache=yes cache_valid_time=86400
