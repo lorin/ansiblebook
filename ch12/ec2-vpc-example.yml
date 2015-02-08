@@ -4,6 +4,7 @@
   vars:
     instance_type: t2.micro
     count: 1
+    region: us-west-1
   tasks:
   - name: create a vpc
     ec2_vpc:
@@ -33,7 +34,7 @@
     with_file: ~/.ssh/id_rsa.pub
   - name: web security group
     ec2_group:
-      name: vpc-web
+      name: web
       description: allow http and https access
       vpc_id: "{{ vpc_id }}"
       rules:
@@ -47,7 +48,7 @@
           cidr_ip: 0.0.0.0/0
   - name: ssh security group
     ec2_group:
-      name: vpc-ssh
+      name: ssh
       description: allow ssh access
       vpc_id: "{{ vpc_id }}"
       rules:
@@ -55,17 +56,27 @@
           from_port: 22
           to_port: 22
           cidr_ip: 0.0.0.0/0
+  - name: outbound security group
+    ec2_group:
+      name: outbound
+      description: allow outbound connections to the internet
+      region: "{{ region }}"
+      vpc_id: "{{ vpc_id }}"
+      rules_egress:
+        - proto: all
+          cidr_ip: 0.0.0.0/0
   - name: Get the ubuntu trusty AMI
-    ec2_ami_search: distro=ubuntu release=trusty virt=hvm
+    ec2_ami_search: distro=ubuntu release=trusty virt=hvm region={{ region }}
     register: ubuntu_image
   - name: start the instances
     ec2:
       image: "{{ ubuntu_image.ami }}"
+      region: "{{ region }}"
       instance_type: "{{ instance_type }}"
       assign_public_ip: True
       key_name: mykey
-      group: [vpc-web, vpc-ssh]
-      instance_tags: { type: web, env: production }
+      group: [web, ssh]
+      instance_tags: { Name: book, type: web, env: production }
       exact_count: "{{ count }}"
       count_tag: { type: web }
       vpc_subnet_id: "{{ vpc.subnets[0].id}}"
