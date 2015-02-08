@@ -1,0 +1,17 @@
+#!/bin/bash
+# WANT_JSON
+
+# Read the variables form the file
+host=`jq -r .host < $1`
+port=`jq -r .port < $1`
+timeout=`jq -r .timeout < $1`
+
+# Check if we can reach the host
+nc -z -w $timeout $host $port
+
+# Output based on success or failure
+if [ $? -eq 0 ]; then
+    echo '{"changed": false}'
+else
+    echo "{\"failed\": true, \"msg\": \"could not reach $host:$port\"}"
+fi

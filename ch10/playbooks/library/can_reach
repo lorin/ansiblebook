@@ -1,0 +1,37 @@
+#!/usr/bin/python
+
+def can_reach(module, host, port, timeout):
+    nc_path = module.get_bin_path('nc', required=True) 1
+    args = [nc_path, "-z", "-w", str(timeout),
+            host, str(port)]
+    (rc, stdout, stderr) = module.run_command(args) 2
+    return rc == 0
+
+def main():
+    module = AnsibleModule( 3
+        argument_spec=dict( 4
+            host=dict(required=True), 5
+            port=dict(required=True, type='int'),
+            timeout=dict(required=False, type='int', default=3) 6
+        ),
+        supports_check_mode=True 7
+    )
+
+    # In check mode, we take no action
+    # Since this module never changes system state, we just
+    # return changed=False
+    if module.check_mode: 8
+        module.exit_json(changed=False) 9
+
+    host = module.params['host'] 10
+    port = module.params['port']
+    timeout = module.params['timeout']
+
+    if can_reach(module, host, port, timeout):
+        module.exit_json(changed=False)
+    else:
+        msg = "Could not reach %s:%s" % (host, port)
+        module.fail_json(msg=msg) 11
+
+from ansible.module_utils.basic import * 12
+main()
