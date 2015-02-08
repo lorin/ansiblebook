@@ -33,14 +33,13 @@
           from_port: 22
           to_port: 22
           cidr_ip: 0.0.0.0/0
-  - name: outbound group
+  - name: outbound security group
     ec2_group:
       name: outbound
       description: allow outbound connections to the internet
       region: "{{ region }}"
       rules_egress:
         - proto: all
-          type: all
           cidr_ip: 0.0.0.0/0
   - name: Get the ubuntu trusty AMI
     ec2_ami_search: distro=ubuntu release=trusty virt=hvm region={{ region }}
