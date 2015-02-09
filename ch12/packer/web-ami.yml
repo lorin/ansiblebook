@@ -1,0 +1,6 @@
+---
+- name: configure a webserver as an ami
+  hosts: localhost
+  sudo: True
+  roles:
+    - web
