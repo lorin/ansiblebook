@@ -1,0 +1,32 @@
+{
+  "builders": [
+    {
+      "type": "amazon-ebs",
+      "region": "us-east-1",
+      "source_ami": "ami-8caa1ce4",
+      "instance_type": "t1.micro",
+      "ssh_username": "ubuntu",
+      "ami_name": "web-nginx-{{timestamp}}",
+      "tags": {
+        "Name": "web-nginx"
+      }
+    }
+  ],
+  "provisioners": [
+    {
+      "type": "shell",
+      "inline": [
+        "sleep 30",
+        "sudo apt-get update",
+        "sudo apt-get install -y ansible"
+      ]
+    },
+    {
+      "type": "ansible-local",
+      "playbook_file": "web-ami.yml",
+      "role_paths": [
+        "/Users/lorinhochstein/dev/oreilly-ansible/playbooks/roles/web"
+      ]
+    }
+  ]
+}
