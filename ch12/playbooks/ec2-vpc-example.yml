@@ -8,8 +8,9 @@
   tasks:
   - name: create a vpc
     ec2_vpc:
+      region: "{{ region }}"
       internet_gateway: True
-      resource_tags: { env: production }
+      resource_tags: { Name: book, env: production }
       cidr_block: 10.0.0.0/16
       subnets:
         - cidr: 10.0.0.0/24
@@ -28,13 +29,14 @@
           - dest: 0.0.0.0/0
             gw: igw
     register: vpc
-  - set_fact: vpc_id={{ vpc.vpc_id }} public_subnet_id={{ vpc.subnets[0].id }}
+  - set_fact: vpc_id={{ vpc.vpc_id }}
   - name: set ec2 keypair
     ec2_key: name=mykey key_material="{{ item }}"
     with_file: ~/.ssh/id_rsa.pub
   - name: web security group
     ec2_group:
-      name: web
+      name: vpc-web
+      region: "{{ region }}"
       description: allow http and https access
       vpc_id: "{{ vpc_id }}"
       rules:
@@ -48,7 +50,8 @@
           cidr_ip: 0.0.0.0/0
   - name: ssh security group
     ec2_group:
-      name: ssh
+      name: vpc-ssh
+      region: "{{ region }}"
       description: allow ssh access
       vpc_id: "{{ vpc_id }}"
       rules:
@@ -58,7 +61,7 @@
           cidr_ip: 0.0.0.0/0
   - name: outbound security group
     ec2_group:
-      name: outbound
+      name: vpc-outbound
       description: allow outbound connections to the internet
       region: "{{ region }}"
       vpc_id: "{{ vpc_id }}"
@@ -75,7 +78,7 @@
       instance_type: "{{ instance_type }}"
       assign_public_ip: True
       key_name: mykey
-      group: [web, ssh]
+      group: [vpc-web, vpc-ssh, vpc-outbound]
       instance_tags: { Name: book, type: web, env: production }
       exact_count: "{{ count }}"
       count_tag: { type: web }
@@ -84,11 +87,11 @@
     register: ec2
   - name: add the instance to web and production groups
     add_host: hostname={{ item.public_dns_name }} groups=web,production
-    with_items: ec2.instances
+    with_items: ec2.tagged_instances
     when: item.public_dns_name is defined
   - name: wait for ssh server to be running
     wait_for: host={{ item.public_dns_name }} port=22 search_regex=OpenSSH
-    with_items: ec2.instances
+    with_items: ec2.tagged_instances
     when: item.public_dns_name is defined
 
 - name: configure webservers
