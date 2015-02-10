@@ -1,0 +1,28 @@
+---
+- name: launch instance role
+  hosts: localhost
+  gather_facts: False
+  vars:
+    region: us-west-1
+    instance_type: t2.micro
+  tasks:
+  - name: Get the ubuntu trusty AMI
+    ec2_ami_search: distro=ubuntu release=trusty virt=hvm region={{ region }}
+    register: ubuntu_image
+  - name: start the instance
+    ec2:
+      region: "{{ region }}"
+      image: "{{ ubuntu_image.ami }}"
+      instance_type: "{{ instance_type }}"
+      key_name: mykey
+      group: [ssh, outbound]
+      instance_tags: { Name: instance-role, type: ansible }
+      exact_count: 1
+      count_tag: { type: ansible }
+      instance_profile_name: ansible
+      wait: yes
+    register: ec2
+  - name: wait for ssh server to be running
+    wait_for: host={{ item.public_dns_name }} port=22 search_regex=OpenSSH
+    with_items: ec2.tagged_instances
+    when: item.public_dns_name is defined
