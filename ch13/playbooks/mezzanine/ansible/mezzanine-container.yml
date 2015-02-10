@@ -1,0 +1,48 @@
+- name: Create Mezzanine container
+  hosts: local
+  vars:
+    mezzanine_repo_url: https://github.com/lorin/mezzanine-example.git
+    mezzanine_proj_path: /srv/project
+    mezzanine_reqs_path: requirements.txt
+    script_path: /srv/scripts
+  tasks:
+  - name: install apt packages
+    apt: pkg={{ item }} update_cache=yes cache_valid_time=3600
+    with_items:
+      - git
+      - gunicorn
+      - libjpeg-dev
+      - libpq-dev
+      - python-dev
+      - python-pip
+      - python-psycopg2
+      - python-setuptools
+  - name: check out the repository on the host
+    git: repo={{ mezzanine_repo_url }} dest={{ mezzanine_proj_path }} accept_hostkey=yes
+  - name: install required python packages
+    pip: name={{ item }}
+    with_items:
+      - south
+      - psycopg2
+      - django-compressor
+      - python-memcached
+  - name: install requirements.txt
+    pip: requirements={{ mezzanine_proj_path }}/{{ mezzanine_reqs_path }}
+  - name: generate the settings file
+    copy: src=files/local_settings.py dest={{ mezzanine_proj_path }}/local_settings.py
+  - name: set the gunicorn config file
+    copy: src=files/gunicorn.conf.py dest={{ mezzanine_proj_path }}/gunicorn.conf.py
+  - name: collect static assets into the appropriate directory
+    django_manage: command=collectstatic app_path={{ mezzanine_proj_path }}
+    environment:
+      # We can't run collectstatic if the secret key is blank,
+      # so we just pass in an arbitrary one
+      SECRET_KEY: nonblanksecretkey
+  - name: script directory
+    file: path={{ script_path }} state=directory
+  - name: copy scripts for setting site id and admin at launch time
+    copy: src=files/scripts/{{ item }} dest={{ script_path }}/{{ item }} mode=0755
+    with_items:
+      - setadmin.py
+      - setsite.py
+
