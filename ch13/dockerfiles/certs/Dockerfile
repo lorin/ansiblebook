@@ -1,5 +1,5 @@
 FROM ubuntu:trusty
-MAintAINER lorin@ansiblebook.com
+MAINTAINER lorin@ansiblebook.com
 
 # Create self-signed cert for 192.168.59.103
 RUN apt-get update
