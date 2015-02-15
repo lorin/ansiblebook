@@ -20,5 +20,5 @@
     chdir={{ mezzanine_conf_path }}
     creates={{ mezzanine_conf_path }}/{{ mezzanine_proj_name }}.crt
   sudo: True
-  when: ssl_enabled
+  when: tls_enabled
   notify: restart nginx

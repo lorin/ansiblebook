@@ -1,2 +1,2 @@
 ---
-ssl_enabled: True
+tls_enabled: True

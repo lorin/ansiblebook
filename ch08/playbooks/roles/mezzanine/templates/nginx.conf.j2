@@ -6,14 +6,14 @@ server {
 
     listen 80;
 
-    {% if ssl_enabled %}
+    {% if tls_enabled %}
     listen 443 ssl;
     {% endif %}
     server_name {{ domains|join(", ") }};
     client_max_body_size 10M;
     keepalive_timeout    15;
 
-    {% if ssl_enabled %}
+    {% if tls_enabled %}
     ssl_certificate      conf/{{ mezzanine_proj_name }}.crt;
     ssl_certificate_key  conf/{{ mezzanine_proj_name }}.key;
     ssl_session_cache    shared:SSL:10m;
