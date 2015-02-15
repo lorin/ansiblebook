@@ -45,7 +45,7 @@
 - name: ensure config path exists
   file: path={{ mezzanine_conf_path }} state=directory
   sudo: True
-  when: ssl_enabled
+  when: tls_enabled
 - name: install poll twitter cron job
   cron: >
     name="poll twitter" minute="*/5" user={{ mezzanine_user }}

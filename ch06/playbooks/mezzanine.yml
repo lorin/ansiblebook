@@ -20,7 +20,7 @@
     # Variables below don't appear in Mezannine's fabfile.py
     # but I've added them for convenience
     conf_path: /etc/nginx/conf
-    ssl_enabled: True
+    tls_enabled: True
     python: "{{ venv_path }}/bin/python"
     database_name: "{{ proj_name }}"
     database_user: "{{ proj_name }}"
@@ -122,7 +122,7 @@
     - name: ensure config path exists
       file: path={{ conf_path }} state=directory
       sudo: True
-      when: ssl_enabled
+      when: tls_enabled
     - name: create ssl certificates
       command: >
         openssl req -new -x509 -nodes -out {{ proj_name }}.crt
@@ -130,7 +130,7 @@
         chdir={{ conf_path }}
         creates={{ conf_path }}/{{ proj_name }}.crt
       sudo: True
-      when: ssl_enabled
+      when: tls_enabled
       notify: restart nginx
     - name: install poll twitter cron job
       cron: name="poll twitter" minute="*/5" user={{ user }} job="{{ manage }} poll_twitter"
