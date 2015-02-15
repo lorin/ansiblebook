@@ -1,5 +1,5 @@
 ---
-- name: Configure webserver with nginx and ssl
+- name: Configure webserver with nginx and tls
   hosts: webservers
   sudo: True
   vars:
@@ -10,12 +10,12 @@
   tasks:
     - name: Install nginx
       apt: name=nginx update_cache=yes cache_valid_time=3600
-    - name: create directories for ssl certificates
+    - name: create directories for TLS certificates
       file: path=/etc/nginx/ssl state=directory
-    - name: copy SSL key
+    - name: copy TLS key
       copy: src=files/nginx.key dest={{ key_file }} owner=root mode=0600
       notify: restart nginx
-    - name: copy SSL certificate
+    - name: copy TLS certificate
       copy: src=files/nginx.crt dest={{ cert_file }}
       notify: restart nginx
     - name: copy nginx config file
