@@ -25,7 +25,7 @@
       file: dest=/etc/nginx/sites-enabled/default src={{ conf_file }} state=link
       notify: restart nginx
     - name: copy index.html
-      copy: src=files/index.html dest=/usr/share/nginx/html/index.html mode=0644
+      template: src=templates/index.html.j2 dest=/usr/share/nginx/html/index.html mode=0644
   handlers:
     - name: restart nginx
       service: name=nginx state=restarted
