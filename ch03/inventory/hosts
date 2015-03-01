@@ -31,7 +31,7 @@ maryland.example.com
 ontario.example.com
 vagrant2
 
-[redis]
+[rabbitmq]
 pennsylvania.example.com
 quebec.example.com
 vagrant3

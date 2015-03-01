@@ -4,4 +4,4 @@ db_replica_host: virginia.example.com
 db_name: widget_production
 db_user: widgetuser
 db_password: pFmMxcyD;Fc6)6
-redis_host: pennsylvania.example.com
+rabbitmq_host: pennsylvania.example.com
