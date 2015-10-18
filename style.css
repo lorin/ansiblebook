@@ -1,0 +1,96 @@
+.row > div {
+  padding-top: 36px;
+}
+
+.intro h1 {
+  margin-top: 0;
+}
+
+.separator {
+  margin-top: 36px;
+  padding: 18px 36px;
+  background: #eee;
+  border-radius: 6px;
+}
+
+.separator h2 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 300;
+}
+
+.match-twitter-button {
+  font-size: 13px !important;
+  line-height: 26px !important;
+  padding: 0 12px !important;
+  vertical-align: top !important;
+  font-weight: bold;
+  margin-right: 1em;
+}
+
+.center-icon {
+  padding: 0 25%;
+  text-align: center;
+}
+
+.row.principles > div {
+  padding-top: 18px;
+}
+
+.row.principles h3 {
+  color: #777;
+  margin-top: 12px;
+}
+
+.testimonials {
+  padding: 10px 20px;
+  margin: 24px 0 16px -20px;
+  border: 1px solid #e8e8e8;
+  border-radius: 5px;
+}
+
+.testimonials h2 {
+  margin: 9px 0 0 0;
+  font-size: 12px;
+  font-weight: 700;
+  color: #959595;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.testimonials .row > div {
+  padding-top: 18px;
+}
+
+.row > div > h3:first-child {
+  margin-top: 0;
+}
+
+.take-my-money {
+  text-align: center;
+}
+
+.take-my-money .btn {
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+body > footer {
+  border-top: 1px solid #e8e8e8;
+  margin-top: 24px;
+  padding: 24px 0;
+}
+
+body > footer p {
+  font-size: 12px;
+  text-align: center;
+  color: #777;
+}
+
+/* On small screens, the long title "Designing Data-Intensive Apps" doesn't fit
+ * on one line -- allow it to wrap gracefully */
+.navbar-header .navbar-brand {
+  float: none;
+  display: block;
+  height: auto;
+}
