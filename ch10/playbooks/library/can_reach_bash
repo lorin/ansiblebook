@@ -1,7 +1,7 @@
 #!/bin/bash
 # WANT_JSON
 
-# Read the variables form the file
+# Read the variables from the file
 host=`jq -r .host < $1`
 port=`jq -r .port < $1`
 timeout=`jq -r .timeout < $1`
