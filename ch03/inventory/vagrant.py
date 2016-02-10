@@ -21,7 +21,7 @@ def list_running_hosts():
     status = subprocess.check_output(cmd.split()).rstrip()
     hosts = []
     for line in status.split('\n'):
-        (_, host, key, value) = line.split(',')
+        (_, host, key, value) = line.split(',')[:4]
         if key == 'state' and value == 'running':
             hosts.append(host)
     return hosts
