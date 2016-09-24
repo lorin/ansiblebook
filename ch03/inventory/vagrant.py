@@ -33,10 +33,10 @@ def get_host_details(host):
     config = paramiko.SSHConfig()
     config.parse(p.stdout)
     c = config.lookup(host)
-    return {'ansible_ssh_host': c['hostname'],
-            'ansible_ssh_port': c['port'],
-            'ansible_ssh_user': c['user'],
-            'ansible_ssh_private_key_file': c['identityfile'][0]}
+    return {'ansible_host': c['hostname'],
+            'ansible_port': c['port'],
+            'ansible_user': c['user'],
+            'ansible_private_key_file': c['identityfile'][0]}
 
 
 def main():

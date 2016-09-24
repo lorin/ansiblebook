@@ -2,7 +2,7 @@
 - name: Deploy mezzanine
   hosts: web
   vars:
-    user: "{{ ansible_ssh_user }}"
+    user: "{{ ansible_user }}"
     proj_name: mezzanine-example
     venv_home: "{{ ansible_env.HOME }}"
     venv_path: "{{ venv_home }}/{{ proj_name }}"

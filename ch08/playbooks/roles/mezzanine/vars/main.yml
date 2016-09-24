@@ -1,6 +1,6 @@
 ---
 # vars file for mezzanine
-mezzanine_user: "{{ ansible_ssh_user }}"
+mezzanine_user: "{{ ansible_user }}"
 mezzanine_venv_home: "{{ ansible_env.HOME }}"
 mezzanine_venv_path: "{{ mezzanine_venv_home }}/{{ mezzanine_proj_name }}"
 mezzanine_repo_url: git@github.com:lorin/mezzanine-example.git
