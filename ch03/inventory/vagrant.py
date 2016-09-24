@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # Adapted from Mark Mandel's implementation
-# https://github.com/ansible/ansible/blob/devel/plugins/inventory/vagrant.py
+# https://github.com/ansible/ansible/blob/stable-2.1/contrib/inventory/vagrant.py
+
 import argparse
 import json
 import paramiko
