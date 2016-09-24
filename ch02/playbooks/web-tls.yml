@@ -1,7 +1,7 @@
 ---
 - name: Configure webserver with nginx and tls
   hosts: webservers
-  sudo: True
+  become: True
   vars:
     key_file: /etc/nginx/ssl/nginx.key
     cert_file: /etc/nginx/ssl/nginx.crt
