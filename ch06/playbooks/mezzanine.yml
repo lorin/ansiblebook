@@ -123,7 +123,7 @@
       file: path={{ conf_path }} state=directory
       become: True
       when: tls_enabled
-    - name: create ssl certificates
+    - name: create tls certificates
       command: >
         openssl req -new -x509 -nodes -out {{ proj_name }}.crt
         -keyout {{ proj_name }}.key -subj '/CN={{ domains[0] }}' -days 3650
