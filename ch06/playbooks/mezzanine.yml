@@ -32,7 +32,7 @@
   tasks:
     - name: install apt packages
       apt: pkg={{ item }} update_cache=yes cache_valid_time=3600
-      sudo: True
+      become: True
       with_items:
         - git
         - libjpeg-dev
@@ -63,8 +63,8 @@
       postgresql_user:
         name: "{{ database_user }}"
         password: "{{ db_pass }}"
-      sudo: True
-      sudo_user: postgres
+      become: True
+      become_user: postgres
     - name: create the database
       postgresql_db:
         name: "{{ database_name }}"
@@ -73,8 +73,8 @@
         lc_ctype: "{{ locale }}"
         lc_collate: "{{ locale }}"
         template: template0
-      sudo: True
-      sudo_user: postgres
+      become: True
+      become_user: postgres
     - name: generate the settings file
       template: src=templates/local_settings.py.j2 dest={{ proj_path }}/local_settings.py
     - name: sync the database, apply migrations, collect static content
@@ -102,26 +102,26 @@
       template: src=templates/gunicorn.conf.py.j2 dest={{ proj_path }}/gunicorn.conf.py
     - name: set the supervisor config file
       template: src=templates/supervisor.conf.j2 dest=/etc/supervisor/conf.d/mezzanine.conf
-      sudo: True
+      become: True
       notify: restart supervisor
     - name: set the nginx config file
       template: src=templates/nginx.conf.j2 dest=/etc/nginx/sites-available/mezzanine.conf
       notify: restart nginx
-      sudo: True
+      become: True
     - name: enable the nginx config file
       file:
         src: /etc/nginx/sites-available/mezzanine.conf
         dest: /etc/nginx/sites-enabled/mezzanine.conf
         state: link
       notify: restart nginx
-      sudo: True
+      become: True
     - name: remove the default nginx config file
       file: path=/etc/nginx/sites-enabled/default state=absent
       notify: restart nginx
-      sudo: True
+      become: True
     - name: ensure config path exists
       file: path={{ conf_path }} state=directory
-      sudo: True
+      become: True
       when: tls_enabled
     - name: create ssl certificates
       command: >
@@ -129,7 +129,7 @@
         -keyout {{ proj_name }}.key -subj '/CN={{ domains[0] }}' -days 3650
         chdir={{ conf_path }}
         creates={{ conf_path }}/{{ proj_name }}.crt
-      sudo: True
+      become: True
       when: tls_enabled
       notify: restart nginx
     - name: install poll twitter cron job
@@ -138,8 +138,8 @@
   handlers:
     - name: restart supervisor
       supervisorctl: name=gunicorn_mezzanine state=restarted
-      sudo: True
+      become: True
     - name: restart nginx
       service: name=nginx state=restarted
-      sudo: True
+      become: True
 
