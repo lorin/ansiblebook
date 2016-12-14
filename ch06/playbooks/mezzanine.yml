@@ -4,10 +4,11 @@
   vars:
     user: "{{ ansible_user }}"
     proj_name: mezzanine-example
-    venv_home: "{{ ansible_env.HOME }}"
+    venv_home: "{{ ansible_env.HOME }}/.virtualenvs"
     venv_path: "{{ venv_home }}/{{ proj_name }}"
     proj_dirname: project
     proj_path: "{{ venv_path }}/{{ proj_dirname }}"
+    settings_path: "{{ proj_path }}/mezzanine_example"
     reqs_path: requirements.txt
     manage: "{{ python }} {{ proj_path }}/manage.py"
     live_hostname: 192.168.33.10.xip.io
@@ -46,20 +47,31 @@
         - python-setuptools
         - python-virtualenv
         - supervisor
-    - name: check out the repository on the host
-      git: repo={{ repo_url }} dest={{ proj_path }} accept_hostkey=yes
-    - name: install required python packages
-      pip: name={{ item }} virtualenv={{ venv_path }}
+    - name: create a logs directory
+      file:
+        path: "{{ ansible_env.HOME }}/logs"
+        state: dir
+    - name: install Python requirements via pip
+      pip: name={{ item }} state=latest
       with_items:
-        - gunicorn
-        - setproctitle
-        - south
-        - psycopg2
-        - django-compressor
-        - python-memcached
-    - name: install requirements.txt
-      pip: requirements={{ proj_path }}/{{ reqs_path }} virtualenv={{ venv_path }}
-    - name: create a user
+          pip
+          virtualenv
+          virtualenvwrapper
+          mercurial
+      become: True
+    - name: generate project locale
+      locale_gen: name={{ locale }}
+      notify: restart postgres
+      become: True
+    - name: create project path
+      file: path={{ proj_path }} state=directory
+    - name: check out the repository on the host
+      git:
+        repo: "{{ repo_url }}"
+        dest: "{{ proj_path }}"
+        accept_hostkey: yes
+        version: update  # TODO: Merge update to the master branch and remove this
+    - name: create a DB user
       postgresql_user:
         name: "{{ database_user }}"
         password: "{{ db_pass }}"
@@ -75,22 +87,32 @@
         template: template0
       become: True
       become_user: postgres
+    - name: install required python packages
+      pip: name={{ item }} virtualenv={{ venv_path }}
+      with_items:
+        - gunicorn
+        - setproctitle
+        - south
+        - psycopg2
+        - django-compressor
+        - python-memcached
+    - name: install requirements.txt
+      pip: requirements={{ proj_path }}/{{ reqs_path }} virtualenv={{ venv_path }}
     - name: generate the settings file
-      template: src=templates/local_settings.py.j2 dest={{ proj_path }}/local_settings.py
+      template: src=templates/local_settings.py.j2 dest={{ settings_path }}/local_settings.py
     - name: sync the database, apply migrations, collect static content
       django_manage:
         command: "{{ item }}"
         app_path: "{{ proj_path }}"
         virtualenv: "{{ venv_path }}"
       with_items:
-        - syncdb
         - migrate
         - collectstatic
     - name: set the site id
       script: scripts/setsite.py
       environment:
-        PATH: "{{ venv_path }}/bin"
         PROJECT_DIR: "{{ proj_path }}"
+        PATH: "{{ venv_path }}/bin"
         WEBSITE_DOMAIN: "{{ live_hostname }}"
     - name: set the admin password
       script: scripts/setadmin.py
@@ -142,4 +164,6 @@
     - name: restart nginx
       service: name=nginx state=restarted
       become: True
+    - name: restart postgres
+      service: name=postgresql state=restarted
 
