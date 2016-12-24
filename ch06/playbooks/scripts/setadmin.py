@@ -13,7 +13,8 @@ import sys
 proj_dir = os.path.expanduser(os.environ['PROJECT_DIR'])
 sys.path.append(proj_dir)
 
-os.environ['DJANGO_SETTINGS_MODULE'] = proj_app + '%.settings'
+proj_app = os.environ['PROJECT_APP']
+os.environ['DJANGO_SETTINGS_MODULE'] = proj_app + '.settings'
 
 from django.contrib.auth import get_user_model
 User = get_user_model()
