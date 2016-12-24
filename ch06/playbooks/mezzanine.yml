@@ -3,12 +3,12 @@
   hosts: web
   vars:
     user: "{{ ansible_user }}"
-    proj_name: mezzanine-example
+    proj_name: mezzanine_example
     venv_home: "{{ ansible_env.HOME }}/.virtualenvs"
     venv_path: "{{ venv_home }}/{{ proj_name }}"
     proj_dirname: project
-    proj_path: "{{ venv_path }}/{{ proj_dirname }}"
-    settings_path: "{{ proj_path }}/mezzanine_example"
+    proj_path: "{{ ansible_env.HOME }}/mezzanine/{{ proj_name }}"
+    settings_path: "{{ proj_path }}/{{ proj_name }}"
     reqs_path: requirements.txt
     manage: "{{ python }} {{ proj_path }}/manage.py"
     live_hostname: 192.168.33.10.xip.io
@@ -87,64 +87,9 @@
         template: template0
       become: True
       become_user: postgres
-    - name: install required python packages
-      pip: name={{ item }} virtualenv={{ venv_path }}
-      with_items:
-        - gunicorn
-        - setproctitle
-        - south
-        - psycopg2
-        - django-compressor
-        - python-memcached
-    - name: install requirements.txt
-      pip: requirements={{ proj_path }}/{{ reqs_path }} virtualenv={{ venv_path }}
-    - name: generate the settings file
-      template: src=templates/local_settings.py.j2 dest={{ settings_path }}/local_settings.py
-    - name: sync the database, apply migrations, collect static content
-      django_manage:
-        command: "{{ item }}"
-        app_path: "{{ proj_path }}"
-        virtualenv: "{{ venv_path }}"
-      with_items:
-        - migrate
-        - collectstatic
-    - name: set the site id
-      script: scripts/setsite.py
-      environment:
-        PROJECT_DIR: "{{ proj_path }}"
-        PATH: "{{ venv_path }}/bin"
-        WEBSITE_DOMAIN: "{{ live_hostname }}"
-    - name: set the admin password
-      script: scripts/setadmin.py
-      environment:
-        PATH: "{{ venv_path }}/bin"
-        PROJECT_DIR: "{{ proj_path }}"
-        ADMIN_PASSWORD: "{{ admin_pass }}"
-    - name: set the gunicorn config file
-      template: src=templates/gunicorn.conf.py.j2 dest={{ proj_path }}/gunicorn.conf.py
-    - name: set the supervisor config file
-      template: src=templates/supervisor.conf.j2 dest=/etc/supervisor/conf.d/mezzanine.conf
-      become: True
-      notify: restart supervisor
-    - name: set the nginx config file
-      template: src=templates/nginx.conf.j2 dest=/etc/nginx/sites-available/mezzanine.conf
-      notify: restart nginx
-      become: True
-    - name: enable the nginx config file
-      file:
-        src: /etc/nginx/sites-available/mezzanine.conf
-        dest: /etc/nginx/sites-enabled/mezzanine.conf
-        state: link
-      notify: restart nginx
-      become: True
-    - name: remove the default nginx config file
-      file: path=/etc/nginx/sites-enabled/default state=absent
-      notify: restart nginx
-      become: True
     - name: ensure config path exists
       file: path={{ conf_path }} state=directory
       become: True
-      when: tls_enabled
     - name: create tls certificates
       command: >
         openssl req -new -x509 -nodes -out {{ proj_name }}.crt
@@ -154,9 +99,64 @@
       become: True
       when: tls_enabled
       notify: restart nginx
+    - name: remove the default nginx config file
+      file: path=/etc/nginx/sites-enabled/default state=absent
+      notify: restart nginx
+      become: True
+    - name: set the nginx config file
+      template: src=templates/nginx.conf.j2 dest=/etc/nginx/sites-available/mezzanine.conf
+      notify: restart nginx
+      become: True
+    - name: enable the nginx config file
+      file:
+        src: /etc/nginx/sites-available/mezzanine.conf
+        dest: /etc/nginx/sites-enabled/mezzanine.conf
+        state: link
+      become: True
+      notify: restart nginx
+    - name: set the supervisor config file
+      template: src=templates/supervisor.conf.j2 dest=/etc/supervisor/conf.d/mezzanine.conf
+      become: True
+      notify: restart supervisor
     - name: install poll twitter cron job
       cron: name="poll twitter" minute="*/5" user={{ user }} job="{{ manage }} poll_twitter"
-
+    - name: set the gunicorn config file
+      template: src=templates/gunicorn.conf.py.j2 dest={{ proj_path }}/gunicorn.conf.py
+    - name: generate the settings file
+      template: src=templates/local_settings.py.j2 dest={{ settings_path }}/local_settings.py
+    - name: install requirements.txt
+      pip: requirements={{ proj_path }}/{{ reqs_path }} virtualenv={{ venv_path }}
+    - name: install required python packages
+      pip: name={{ item }} virtualenv={{ venv_path }}
+      with_items:
+        - gunicorn
+        - setproctitle
+        - psycopg2
+        - django-compressor
+        - python-memcached
+    - name: sync the database, apply migrations, collect static content
+      django_manage:
+        command: "{{ item }}"
+        app_path: "{{ proj_path }}"
+        virtualenv: "{{ venv_path }}"
+      with_items:
+        - createdb --noinput --nodata
+        - collectstatic
+        - migrate
+    - name: set the site id
+      script: scripts/setsite.py
+      environment:
+        PATH: "{{ venv_path }}/bin"
+        PROJECT_DIR: "{{ proj_path }}"
+        PROJECT_APP: "{{ proj_name }}"
+        WEBSITE_DOMAIN: "{{ live_hostname }}"
+    - name: set the admin password
+      script: scripts/setadmin.py
+      environment:
+        PATH: "{{ venv_path }}/bin"
+        PROJECT_DIR: "{{ proj_path }}"
+        PROJECT_APP: "{{ proj_path }}"
+        ADMIN_PASSWORD: "{{ admin_pass }}"
   handlers:
     - name: restart supervisor
       supervisorctl: name=gunicorn_mezzanine state=restarted
