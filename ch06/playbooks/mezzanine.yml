@@ -3,7 +3,8 @@
   hosts: web
   vars:
     user: "{{ ansible_user }}"
-    proj_name: mezzanine_example
+    proj_app: mezzanine_example
+    proj_name: "{{ proj_app }}"
     venv_home: "{{ ansible_env.HOME }}/.virtualenvs"
     venv_path: "{{ venv_home }}/{{ proj_name }}"
     proj_dirname: project
@@ -28,6 +29,7 @@
     database_host: localhost
     database_port: 5432
     gunicorn_proc_name: mezzanine
+    num_workers: "multiprocessing.cpu_count() * 2 + 1"
   vars_files:
     - secrets.yml
   tasks:
@@ -147,22 +149,21 @@
       environment:
         PATH: "{{ venv_path }}/bin"
         PROJECT_DIR: "{{ proj_path }}"
-        PROJECT_APP: "{{ proj_name }}"
+        PROJECT_APP: "{{ proj_app }}"
         WEBSITE_DOMAIN: "{{ live_hostname }}"
     - name: set the admin password
       script: scripts/setadmin.py
       environment:
         PATH: "{{ venv_path }}/bin"
         PROJECT_DIR: "{{ proj_path }}"
-        PROJECT_APP: "{{ proj_name }}"
+        PROJECT_APP: "{{ proj_app }}"
         ADMIN_PASSWORD: "{{ admin_pass }}"
   handlers:
     - name: restart supervisor
-      supervisorctl: name=gunicorn_mezzanine state=restarted
+      supervisorctl: "name=gunicorn_{{ proj_name }} state=restarted"
       become: True
     - name: restart nginx
       service: name=nginx state=restarted
       become: True
     - name: restart postgres
       service: name=postgresql state=restarted
-
