@@ -13,7 +13,7 @@ proj_dir = os.path.expanduser(os.environ['PROJECT_DIR'])
 sys.path.append(proj_dir)
 
 proj_app = os.environ['PROJECT_APP']
-os.environ['DJANGO_SETTINGS_MODULE'] = proj_app + '%.settings'
+os.environ['DJANGO_SETTINGS_MODULE'] = proj_app + '.settings'
 import django
 django.setup()
 from django.conf import settings
