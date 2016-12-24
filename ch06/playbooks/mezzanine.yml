@@ -154,7 +154,7 @@
       environment:
         PATH: "{{ venv_path }}/bin"
         PROJECT_DIR: "{{ proj_path }}"
-        PROJECT_APP: "{{ proj_path }}"
+        PROJECT_APP: "{{ proj_name }}"
         ADMIN_PASSWORD: "{{ admin_pass }}"
   handlers:
     - name: restart supervisor

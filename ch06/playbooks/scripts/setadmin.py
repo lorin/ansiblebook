@@ -15,7 +15,8 @@ sys.path.append(proj_dir)
 
 proj_app = os.environ['PROJECT_APP']
 os.environ['DJANGO_SETTINGS_MODULE'] = proj_app + '.settings'
-
+import django
+django.setup()
 from django.contrib.auth import get_user_model
 User = get_user_model()
 u, _ = User.objects.get_or_create(username='admin')
