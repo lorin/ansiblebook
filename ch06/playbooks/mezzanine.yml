@@ -50,7 +50,7 @@
     - name: create a logs directory
       file:
         path: "{{ ansible_env.HOME }}/logs"
-        state: dir
+        state: directory
     - name: install Python requirements via pip
       pip: name={{ item }} state=latest
       with_items:
