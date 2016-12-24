@@ -134,15 +134,14 @@
         - psycopg2
         - django-compressor
         - python-memcached
-    - name: sync the database, apply migrations, collect static content
+    - name: apply migrations to create the database, collect static content
       django_manage:
         command: "{{ item }}"
         app_path: "{{ proj_path }}"
         virtualenv: "{{ venv_path }}"
       with_items:
-        - createdb --noinput --nodata
-        - collectstatic
         - migrate
+        - collectstatic
     - name: set the site id
       script: scripts/setsite.py
       environment:
