@@ -1,4 +1,4 @@
-[program:gunicorn_{{ proj_name }}]
+[program:{{ gunicorn_procname }}]
 command={{ venv_path }}/bin/gunicorn -c gunicorn.conf.py -p gunicorn.pid {{ proj_app }}.wsgi:application
 directory={{ proj_path }}
 user={{ user }}
