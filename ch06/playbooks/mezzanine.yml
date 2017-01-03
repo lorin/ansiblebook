@@ -14,10 +14,10 @@
     manage: "{{ python }} {{ proj_path }}/manage.py"
     live_hostname: 192.168.33.10.xip.io
     domains:
+      - 192.168.33.10
       - 192.168.33.10.xip.io
       - www.192.168.33.10.xip.io
     repo_url: git@github.com:lorin/mezzanine-example.git
-    gunicorn_port: 8000
     locale: en_US.UTF-8
     # Variables below don't appear in Mezannine's fabfile.py
     # but I've added them for convenience
@@ -28,7 +28,7 @@
     database_user: "{{ proj_name }}"
     database_host: localhost
     database_port: 5432
-    gunicorn_proc_name: mezzanine
+    gunicorn_procname: gunicorn_mezzanine
     num_workers: "multiprocessing.cpu_count() * 2 + 1"
   vars_files:
     - secrets.yml
@@ -160,7 +160,7 @@
         ADMIN_PASSWORD: "{{ admin_pass }}"
   handlers:
     - name: restart supervisor
-      supervisorctl: "name=gunicorn_{{ proj_name }} state=restarted"
+      supervisorctl: "name={{ gunicorn_procname }} state=restarted"
       become: True
     - name: restart nginx
       service: name=nginx state=restarted
