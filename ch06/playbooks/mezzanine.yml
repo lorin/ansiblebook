@@ -14,7 +14,6 @@
     manage: "{{ python }} {{ proj_path }}/manage.py"
     live_hostname: 192.168.33.10.xip.io
     domains:
-      - 192.168.33.10
       - 192.168.33.10.xip.io
       - www.192.168.33.10.xip.io
     repo_url: git@github.com:lorin/mezzanine-example.git
@@ -49,30 +48,28 @@
         - python-setuptools
         - python-virtualenv
         - supervisor
+    - name: create project path
+      file: path={{ proj_path }} state=directory
     - name: create a logs directory
       file:
         path: "{{ ansible_env.HOME }}/logs"
         state: directory
-    - name: install Python requirements via pip
-      pip: name={{ item }} state=latest
-      with_items:
-          pip
-          virtualenv
-          virtualenvwrapper
-          mercurial
-      become: True
-    - name: generate project locale
-      locale_gen: name={{ locale }}
-      notify: restart postgres
-      become: True
-    - name: create project path
-      file: path={{ proj_path }} state=directory
     - name: check out the repository on the host
       git:
         repo: "{{ repo_url }}"
         dest: "{{ proj_path }}"
         accept_hostkey: yes
         version: update  # TODO: Merge update to the master branch and remove this
+    - name: install Python requirements globally via pip
+      pip: name={{ item }} state=latest
+      with_items:
+        - pip
+        - virtualenv
+        - virtualenvwrapper
+      become: True
+    - name: create project locale
+      locale_gen: name={{ locale }}
+      become: True
     - name: create a DB user
       postgresql_user:
         name: "{{ database_user }}"
@@ -165,5 +162,3 @@
     - name: restart nginx
       service: name=nginx state=restarted
       become: True
-    - name: restart postgres
-      service: name=postgresql state=restarted
