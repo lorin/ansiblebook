@@ -7,7 +7,6 @@
     proj_name: "{{ proj_app }}"
     venv_home: "{{ ansible_env.HOME }}/.virtualenvs"
     venv_path: "{{ venv_home }}/{{ proj_name }}"
-    proj_dirname: project
     proj_path: "{{ ansible_env.HOME }}/mezzanine/{{ proj_name }}"
     settings_path: "{{ proj_path }}/{{ proj_name }}"
     reqs_path: requirements.txt
