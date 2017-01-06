@@ -54,10 +54,7 @@
         path: "{{ ansible_env.HOME }}/logs"
         state: directory
     - name: check out the repository on the host
-      git:
-        repo: "{{ repo_url }}"
-        dest: "{{ proj_path }}"
-        accept_hostkey: yes
+      git: repo={{ repo_url }} dest={{ proj_path }} accept_hostkey=yes
     - name: install Python requirements globally via pip
       pip: name={{ item }} state=latest
       with_items:
