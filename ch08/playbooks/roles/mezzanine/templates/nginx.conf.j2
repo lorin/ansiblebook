@@ -1,5 +1,5 @@
 upstream {{ mezzanine_proj_name }} {
-    server 127.0.0.1:{{ mezzanine_gunicorn_port }};
+    server unix:{{ mezzanine_proj_path }}/gunicorn.sock fail_timeout=0;
 }
 
 server {

@@ -1,11 +1,18 @@
+- name: create a logs directory
+  file: path="{{ ansible_env.HOME }}/logs" state=directory
 - name: check out the repository on the host
   git: repo={{ mezzanine_repo_url }} dest={{ mezzanine_proj_path }} accept_hostkey=yes
+- name: install Python requirements globally via pip
+  pip: name={{ item }} state=latest
+  with_items:
+    - pip
+    - virtualenv
+    - virtualenvwrapper
 - name: install required python packages
   pip: name={{ item }} virtualenv={{ mezzanine_venv_path }}
   with_items:
     - gunicorn
     - setproctitle
-    - south
     - psycopg2
     - django-compressor
     - python-memcached
@@ -15,13 +22,12 @@
     virtualenv={{ mezzanine_venv_path }}
 - name: generate the settings file
   template: src=local_settings.py.j2 dest={{ mezzanine_proj_path }}/local_settings.py
-- name: sync the database, apply migrations, collect static content
+- name: apply migrations to create the database, collect static content
   django_manage:
     command: "{{ item }}"
     app_path: "{{ mezzanine_proj_path }}"
     virtualenv: "{{ mezzanine_venv_path }}"
   with_items:
-    - syncdb
     - migrate
     - collectstatic
 - name: set the site id
@@ -29,12 +35,14 @@
   environment:
     PATH: "{{ mezzanine_venv_path }}/bin"
     PROJECT_DIR: "{{ mezzanine_proj_path }}"
+    PROJECT_APP: "{{ mezzanine_proj_app }}"
     WEBSITE_DOMAIN: "{{ live_hostname }}"
 - name: set the admin password
   script: scripts/setadmin.py
   environment:
     PATH: "{{ mezzanine_venv_path }}/bin"
     PROJECT_DIR: "{{ mezzanine_proj_path }}"
+    PROJECT_APP: "{{ mezzanine_proj_app }}"
     ADMIN_PASSWORD: "{{ admin_pass }}"
 - name: set the gunicorn config file
   template: src=gunicorn.conf.py.j2 dest={{ mezzanine_proj_path }}/gunicorn.conf.py

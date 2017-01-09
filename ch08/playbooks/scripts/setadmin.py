@@ -3,6 +3,7 @@
 # Assumes two environment variables
 #
 # PROJECT_DIR: the project directory (e.g., ~/projname)
+# PROJECT_APP: name of the project app
 # ADMIN_PASSWORD: admin user's password
 
 import os
@@ -12,10 +13,11 @@ import sys
 proj_dir = os.path.expanduser(os.environ['PROJECT_DIR'])
 sys.path.append(proj_dir)
 
-os.environ['DJANGO_SETTINGS_MODULE'] = 'settings'
-
-
-from mezzanine.utils.models import get_user_model
+proj_app = os.environ['PROJECT_APP']
+os.environ['DJANGO_SETTINGS_MODULE'] = proj_app + '.settings'
+import django
+django.setup()
+from django.contrib.auth import get_user_model
 User = get_user_model()
 u, _ = User.objects.get_or_create(username='admin')
 u.is_staff = u.is_superuser = True

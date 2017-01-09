@@ -7,7 +7,7 @@
     - libjpeg-dev
     - libpq-dev
     - memcached
-    - nginx
+    - postgresql
     - python-dev
     - python-pip
     - python-psycopg2

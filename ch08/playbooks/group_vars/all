@@ -1,3 +1,4 @@
-mezzanine_proj_name: mezzanine_example
+mezzanine_proj_app: mezzanine_example
+mezzanine_proj_name: "{{ mezzanine_proj_app }}"
 locale: en_US.UTF-8
 database_port: 5432
