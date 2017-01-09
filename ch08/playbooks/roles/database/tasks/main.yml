@@ -1,7 +1,7 @@
 ---
 - name: install apt packages
   apt: pkg={{ item }} update_cache=yes cache_valid_time=3600
-  sudo: True
+  become: True
   with_items:
     - libpq-dev
     - postgresql
@@ -10,20 +10,23 @@
   copy: >
     src=postgresql.conf dest=/etc/postgresql/9.3/main/postgresql.conf
     owner=postgres group=postgres mode=0644
-  sudo: True
+  become: True
   notify: restart postgres
 - name: copy client authentication configuration file
   copy: >
     src=pg_hba.conf dest=/etc/postgresql/9.3/main/pg_hba.conf
     owner=postgres group=postgres mode=0640
-  sudo: True
+  become: True
   notify: restart postgres
+- name: create project locale
+  locale_gen: name={{ locale }}
+  become: True
 - name: create a user
   postgresql_user:
     name: "{{ database_user }}"
     password: "{{ db_pass }}"
-  sudo: True
-  sudo_user: postgres
+  become: True
+  become_user: postgres
 - name: create the database
   postgresql_db:
     name: "{{ database_name }}"
@@ -32,5 +35,5 @@
     lc_ctype: "{{ locale }}"
     lc_collate: "{{ locale }}"
     template: template0
-  sudo: True
-  sudo_user: postgres
+  become: True
+  become_user: postgres

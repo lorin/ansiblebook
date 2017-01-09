@@ -40,11 +40,11 @@
   template: src=gunicorn.conf.py.j2 dest={{ mezzanine_proj_path }}/gunicorn.conf.py
 - name: set the supervisor config file
   template: src=supervisor.conf.j2 dest=/etc/supervisor/conf.d/mezzanine.conf
-  sudo: True
+  become: True
   notify: restart supervisor
 - name: ensure config path exists
   file: path={{ mezzanine_conf_path }} state=directory
-  sudo: True
+  become: True
   when: tls_enabled
 - name: install poll twitter cron job
   cron: >

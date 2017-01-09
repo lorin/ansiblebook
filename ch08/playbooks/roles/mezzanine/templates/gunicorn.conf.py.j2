@@ -1,7 +1,8 @@
 from __future__ import unicode_literals
 import multiprocessing
 
-bind = "127.0.0.1:{{ mezzanine_gunicorn_port }}"
-workers = multiprocessing.cpu_count() * 2 + 1
+bind = "unix:{{ mezzanine_proj_path }}/gunicorn.sock"
+workers = {{ mezzanine_num_workers }}
+errorlog = "/home/{{ mezzanine_user }}/logs/{{ mezzanine_proj_name }}_error.log"
 loglevel = "error"
 proc_name = "{{ mezzanine_proj_name }}"

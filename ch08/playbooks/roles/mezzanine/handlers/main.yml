@@ -1,7 +1,7 @@
 ---
 - name: restart supervisor
   supervisorctl: name=gunicorn_mezzanine state=restarted
-  sudo: True
+  become: True
 - name: restart nginx
   service: name=nginx state=restarted
-  sudo: True
+  become: True

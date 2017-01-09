@@ -1,7 +1,7 @@
 ---
 - name: install apt packages
   apt: pkg={{ item }} update_cache=yes cache_valid_time=3600
-  sudo: True
+  become: True
   with_items:
     - git
     - libjpeg-dev
