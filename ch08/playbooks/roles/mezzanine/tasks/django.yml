@@ -8,6 +8,7 @@
     - pip
     - virtualenv
     - virtualenvwrapper
+  become: True
 - name: install required python packages
   pip: name={{ item }} virtualenv={{ mezzanine_venv_path }}
   with_items:
@@ -21,7 +22,7 @@
     requirements={{ mezzanine_proj_path }}/{{ mezzanine_reqs_path }}
     virtualenv={{ mezzanine_venv_path }}
 - name: generate the settings file
-  template: src=local_settings.py.j2 dest={{ mezzanine_proj_path }}/local_settings.py
+  template: src=local_settings.py.j2 dest={{ mezzanine_settings_path }}/local_settings.py
 - name: apply migrations to create the database, collect static content
   django_manage:
     command: "{{ item }}"
