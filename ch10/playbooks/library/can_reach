@@ -1,4 +1,5 @@
 #!/usr/bin/python
+from ansible.module_utils.basic import AnsibleModule
 
 def can_reach(module, host, port, timeout):
     nc_path = module.get_bin_path('nc', required=True)
@@ -33,5 +34,4 @@ def main():
         msg = "Could not reach %s:%s" % (host, port)
         module.fail_json(msg=msg)
 
-from ansible.module_utils.basic import *
 main()
