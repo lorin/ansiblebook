@@ -34,4 +34,5 @@ def main():
         msg = "Could not reach %s:%s" % (host, port)
         module.fail_json(msg=msg)
 
-main()
+if __name__ == "__main__":
+    main()
