@@ -6,6 +6,12 @@ host=`jq -r .host < $1`
 port=`jq -r .port < $1`
 timeout=`jq -r .timeout < $1`
 
+# Default timeout=3
+
+if [[ $timeout -eq "null" ]]; then
+    timeout=3
+fi
+
 # Check if we can reach the host
 nc -z -w $timeout $host $port
 
