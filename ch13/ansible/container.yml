@@ -1,18 +1,21 @@
 version: "2"
 services:
-  nginx:
-    image: nginx:1.11
-  mezzanine:
-    image: ubuntu:xenial
+  #  nginx:
+  #    image: nginx:1.11
+  #  mezzanine:
+  #    image: ubuntu:xenial
   memcached:
     image: ubuntu:xenial
     expose:
       - "11211"
-    command: [-m, 128]
+    ports:
+      - "11211:11211"
+    command: [-m, "128"]
     entrypoint: memcached
     user: daemon
-  postgres:
-    image: postgres:9.6
+
+  #  postgres:
+  #    image: postgres:9.6
   # Add your containers here, specifying the base image you want to build from
   # For example:
   #
