@@ -1,4 +1,7 @@
 version: "2"
+defaults:
+  database_name: mezzanine
+  database_user: mezzanine
 services:
   #  nginx:
   #    image: nginx:1.11
@@ -13,9 +16,16 @@ services:
     command: [-m, "128"]
     entrypoint: memcached
     user: daemon
+  postgres:
+    image: postgres:9.6
+    expose:
+      - "5432"
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: "{{ database_user }}"
+      POSTGRES_PASSWORD: "{{ database_password }}"
 
-  #  postgres:
-  #    image: postgres:9.6
   # Add your containers here, specifying the base image you want to build from
   # For example:
   #
