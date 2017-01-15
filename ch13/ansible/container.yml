@@ -1,10 +1,13 @@
 version: "2"
 services:
   nginx:
+    image: nginx:1.11
   mezzanine:
     image: ubuntu:xenial
   memcached:
+    image: ubuntu:xenial
   postgres:
+    image: postgres:9.6
   # Add your containers here, specifying the base image you want to build from
   # For example:
   #
