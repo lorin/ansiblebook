@@ -14,3 +14,13 @@
       raw: apt-get -y install python
   roles:
     - memcached
+
+- hosts: mezzanine
+  gather_facts: false
+  pre_tasks:
+    - name: update apt cache
+      raw: apt-get update
+    - name: install python
+      raw: apt-get -y install python
+  roles:
+    - role: mezzanine
