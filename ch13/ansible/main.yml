@@ -5,5 +5,7 @@
 # For many examples of roles, check out Ansible Galaxy: https://galaxy.ansible.com/
 #
 ---
-- hosts: all
+- hosts: memcached
   gather_facts: false
+  roles:
+    - memcached
