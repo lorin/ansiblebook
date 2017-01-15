@@ -15,7 +15,7 @@ galaxy_info:
   # - CC-BY
   license: Apache
 
-  min_ansible_container_version: 0.2.0
+  min_ansible_container_version: 0.3.0-pre
 
   # Optionally specify the branch Galaxy will use when accessing the GitHub
   # repo for this role. During role install, if no tags are available,
