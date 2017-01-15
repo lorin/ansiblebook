@@ -1,6 +1,6 @@
 .PHONY: build run stop
 
-FLAGS=--debug
+FLAGS=#--debug
 
 build:
 	ansible-container $(FLAGS) build
