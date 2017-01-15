@@ -2,6 +2,7 @@ version: "2"
 defaults:
   database_name: mezzanine
   database_user: mezzanine
+  database_password: mezzanine
   secret_key: b495a05c396843b6b47ac944a72c92ed
   nevercache_key: b5d87bb4e17c483093296fa321056bdc
   twitter_access_token_key: 80b557a3a8d14cb7a2b91d60398fb8ce
