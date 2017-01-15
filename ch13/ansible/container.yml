@@ -6,6 +6,11 @@ services:
     image: ubuntu:xenial
   memcached:
     image: ubuntu:xenial
+    expose:
+      - "11211"
+    command: [-m, 128]
+    entrypoint: memcached
+    user: daemon
   postgres:
     image: postgres:9.6
   # Add your containers here, specifying the base image you want to build from
