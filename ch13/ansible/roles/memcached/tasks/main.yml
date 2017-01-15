@@ -1,2 +1,3 @@
 ---
-# tasks file for memcached
+- name: install memcached
+  apt: name=memcached update_cache=yes cache_valid_time=3600
