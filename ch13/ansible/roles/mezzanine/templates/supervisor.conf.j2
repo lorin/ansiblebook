@@ -1,0 +1,9 @@
+[program:{{ mezzanine_gunicorn_procname }}]
+command={{ mezzanine_venv_path }}/bin/gunicorn -c gunicorn.conf.py -p gunicorn.pid {{ mezzanine_proj_app }}.wsgi:application
+directory={{ mezzanine_proj_path }}
+user={{ mezzanine_user }}
+autostart=true
+stdout_logfile=/home/{{ mezzanine_user }}/logs/{{ mezzanine_proj_name }}_supervisor
+autorestart=true
+redirect_stderr=true
+environment=LANG="{{ locale }}",LC_ALL="{{ locale }}",LC_LANG="{{ locale }}"
