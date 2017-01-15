@@ -1,11 +1,10 @@
 galaxy_info:
-  author: Your name
-  description: Describe your awesome application here.
-  company: Your company
+  author: Lorin Hochstein
+  description: Example Mezzanine app
 
   # If the issue tracker for your role is not on GitHub, uncomment the
   # next line and provide a value
-  # issue_tracker_url: 
+  # issue_tracker_url:
 
   # Some suggested licenses:
   # - BSD (default)
@@ -14,7 +13,7 @@ galaxy_info:
   # - GPLv3
   # - Apache
   # - CC-BY
-  license: license (GPLv2, CC-BY, etc)
+  license: Apache
 
   min_ansible_container_version: 0.2.0
 
