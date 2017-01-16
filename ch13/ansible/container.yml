@@ -3,22 +3,11 @@ defaults:
   database_name: mezzanine
   database_user: mezzanine
   database_password: mezzanine
-  secret_key: b495a05c396843b6b47ac944a72c92ed
-  nevercache_key: b5d87bb4e17c483093296fa321056bdc
-  twitter_access_token_key: 80b557a3a8d14cb7a2b91d60398fb8ce
-  twitter_access_token_secret: 1974cf8419114bdd9d4ea3db7a210d90
-  twitter_consumer_key: 1f1c627530b34bb58701ac81ac3fad51
-  twitter_consumer_secret: 36515c2b60ee4ffb9d33d972a7ec350a
-  mezzanine_root_dir: /srv
   mezzanine_proj_app: mezzanine_example
   mezzanine_proj_name: "{{ mezzanine_proj_app }}"
   locale: en_US.UTF-8
   database_host: postgres
   database_port: 5432
-  live_hostname: localhost
-  domains:
-    - localhost
-    - 127.0.0.1
 
 services:
   #  nginx:
