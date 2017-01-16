@@ -1,10 +1,10 @@
 ---
 # vars file for mezzanine
 mezzanine_user: "{{ ansible_user }}"
-mezzanine_venv_home: "{{ ansible_env.HOME }}/.virtualenvs"
+mezzanine_venv_home: "{{ mezzanine_root_dir }}/.virtualenvs"
 mezzanine_venv_path: "{{ mezzanine_venv_home }}/{{ mezzanine_proj_name }}"
 mezzanine_repo_url: git@github.com:ansiblebook/mezzanine_example.git
-mezzanine_proj_path: "{{ ansible_env.HOME }}/mezzanine/{{ mezzanine_proj_name }}"
+mezzanine_proj_path: "{{ mezzanine_root_dir }}/mezzanine/{{ mezzanine_proj_name }}"
 mezzanine_settings_path: "{{ mezzanine_proj_path }}/{{ mezzanine_proj_name }}"
 mezzanine_reqs_path: requirements.txt
 mezzanine_conf_path: /etc/nginx/conf

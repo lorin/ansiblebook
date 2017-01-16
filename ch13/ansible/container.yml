@@ -9,6 +9,7 @@ defaults:
   twitter_access_token_secret: 1974cf8419114bdd9d4ea3db7a210d90
   twitter_consumer_key: 1f1c627530b34bb58701ac81ac3fad51
   twitter_consumer_secret: 36515c2b60ee4ffb9d33d972a7ec350a
+  mezzanine_root_dir: /srv
   mezzanine_proj_app: mezzanine_example
   mezzanine_proj_name: "{{ mezzanine_proj_app }}"
   locale: en_US.UTF-8

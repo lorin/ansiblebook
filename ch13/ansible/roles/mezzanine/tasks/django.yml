@@ -1,5 +1,5 @@
 - name: create a logs directory
-  file: path="{{ ansible_env.HOME }}/logs" state=directory
+  file: path="{{ mezzanine_root_dir }}/logs" state=directory
 - name: check out the repository on the host
   git: repo={{ mezzanine_repo_url }} dest={{ mezzanine_proj_path }} accept_hostkey=yes
 - name: install Python requirements globally via pip
