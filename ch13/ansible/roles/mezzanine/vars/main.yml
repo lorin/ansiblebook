@@ -1,6 +1,8 @@
 ---
 # vars file for mezzanine
 mezzanine_root_dir: /srv
+mezzanine_proj_app: mezzanine_example
+mezzanine_proj_name: "{{ mezzanine_proj_app }}"
 mezzanine_user: "{{ ansible_user }}"
 mezzanine_venv_home: "{{ mezzanine_root_dir }}/.virtualenvs"
 mezzanine_venv_path: "{{ mezzanine_venv_home }}/{{ mezzanine_proj_name }}"
@@ -13,6 +15,7 @@ mezzanine_python: "{{ mezzanine_venv_path }}/bin/python"
 mezzanine_manage: "{{ mezzanine_python }} {{ mezzanine_proj_path }}/manage.py"
 mezzanine_num_workers: "multiprocessing.cpu_count() * 2 + 1"
 mezzanine_gunicorn_procname: gunicorn_mezzanine
+locale: en_US.UTF-8
 
 # Eventually, we will pass these as env vars
 database_name: mezzanine
