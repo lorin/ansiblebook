@@ -28,27 +28,27 @@ services:
       - "80"
     ports:
       - "8000:80"
-    dev_overrides:
-      depends_on:
-        - postgres
-  memcached:
-    image: ubuntu:xenial
-    expose:
-      - "11211"
-    ports:
-      - "11211:11211"
-    command: [-m, "128"]
-    entrypoint: memcached
-    user: daemon
-  postgres:
-    image: postgres:9.6
-    expose:
-      - "{{ database_port }}"
-    ports:
-      - "{{ database_port }}:{{ database_port }}"
-    environment:
-      POSTGRES_USER: "{{ database_user }}"
-      POSTGRES_PASSWORD: "{{ database_password }}"
+    # dev_overrides:
+    #   depends_on:
+    #     - postgres
+  # memcached:
+  #   image: ubuntu:xenial
+  #   expose:
+  #     - "11211"
+  #   ports:
+  #     - "11211:11211"
+  #   command: [-m, "128"]
+  #   entrypoint: memcached
+  #   user: daemon
+  # postgres:
+  #   image: postgres:9.6
+  #   expose:
+  #     - "{{ database_port }}"
+  #   ports:
+  #     - "{{ database_port }}:{{ database_port }}"
+  #   environment:
+  #     POSTGRES_USER: "{{ database_user }}"
+  #     POSTGRES_PASSWORD: "{{ database_password }}"
 
   # Add your containers here, specifying the base image you want to build from
   # For example:
