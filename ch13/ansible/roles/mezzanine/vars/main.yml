@@ -6,7 +6,7 @@ mezzanine_proj_name: "{{ mezzanine_proj_app }}"
 mezzanine_user: "{{ ansible_user }}"
 mezzanine_venv_home: "{{ mezzanine_root_dir }}/.virtualenvs"
 mezzanine_venv_path: "{{ mezzanine_venv_home }}/{{ mezzanine_proj_name }}"
-mezzanine_repo_url: git@github.com:ansiblebook/mezzanine_example.git
+mezzanine_repo_url: https://github.com/ansiblebook/mezzanine_example.git
 mezzanine_proj_path: "{{ mezzanine_root_dir }}/mezzanine/{{ mezzanine_proj_name }}"
 mezzanine_settings_path: "{{ mezzanine_proj_path }}/{{ mezzanine_proj_name }}"
 mezzanine_reqs_path: requirements.txt
