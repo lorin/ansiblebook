@@ -1,5 +1,0 @@
----
-- name: restart supervisor
-  supervisorctl: name=gunicorn_mezzanine state=restarted
-- name: restart nginx
-  service: name=nginx state=restarted
