@@ -1,2 +1,17 @@
 ---
-# tasks file for mezzanine
+- name: install apt packages
+  apt: pkg={{ item }}
+  with_items:
+    - libjpeg-dev
+    - libpq-dev
+    - python-dev
+    - python-pip
+    - python-psycopg2
+- name: install pip packages
+  pip: name={{ item }}
+  with_items:
+    - gunicorn
+    - setproctitle
+    - psycopg2
+    - django-compressor
+    - python-memcached
