@@ -1,2 +1,3 @@
 ---
-# tasks file for memcached
+- name: install memcached package
+  apt: name=memcached update_cache=yes
