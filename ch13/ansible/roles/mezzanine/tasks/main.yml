@@ -7,6 +7,7 @@
     - python-dev
     - python-pip
     - python-psycopg2
+    - rsync
 - name: install pip packages
   pip: name={{ item }}
   with_items:
@@ -17,6 +18,5 @@
     - python-memcached
 - name: copy project files
   synchronize:
-    src: "{{ lookup('pipe', 'dirname `pwd`') }}/mezzanine_example"
+    src: "{{ lookup('pipe', 'dirname `pwd`') }}/mezzanine_example/"
     dest: /srv/project
-
