@@ -4,3 +4,5 @@ services:
     image: ubuntu:xenial
   nginx:
     image: nginx:1.11
+  mezzanine:
+    image: ubuntu:xenial
