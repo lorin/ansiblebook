@@ -2,3 +2,5 @@ version: "2"
 services:
   memcached:
     image: ubuntu:xenial
+  nginx:
+    image: nginx:1.11
