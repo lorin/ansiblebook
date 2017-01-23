@@ -15,3 +15,8 @@
     - psycopg2
     - django-compressor
     - python-memcached
+- name: copy project files
+  synchronize:
+    src: "{{ lookup('pipe', 'dirname `pwd`') }}/mezzanine_example"
+    dest: /srv/project
+
