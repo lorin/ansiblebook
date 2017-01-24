@@ -18,4 +18,5 @@ if [[ $@ == *"gunicorn"* || $@ == *"runserver"* ]]; then
 	fi
 fi
 
-
+# Run the actual server
+exec "$@"
