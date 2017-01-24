@@ -9,3 +9,5 @@ services:
   mezzanine:
     image: ubuntu:xenial
     entrypoint: [/usr/bin/entrypoint.sh]
+    expose:
+      - "8000"
