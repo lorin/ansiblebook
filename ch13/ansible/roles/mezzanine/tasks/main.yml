@@ -21,7 +21,10 @@
     src: "{{ lookup('pipe', 'dirname `pwd`') }}/mezzanine_example/"
     dest: /srv/project
 - name: copy scripts
-  copy: src="{{ role_path }}/files/{{ item }}" dest="/srv/bin/{{ item }}"
+  copy:
+    src: "{{ role_path }}/files/{{ item }}"
+    dest: "/srv/bin/{{ item }}"
+    mode: "u=rwx,g=rx,o=rx"
   with_items:
     - entrypoint.sh
     - setsite.py
