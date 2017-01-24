@@ -2,7 +2,10 @@ version: "2"
 services:
   memcached:
     image: ubuntu:xenial
+    expose:
+      - "11211"
   nginx:
     image: nginx:1.11
   mezzanine:
     image: ubuntu:xenial
+    entrypoint: [/usr/bin/entrypoint.sh]
