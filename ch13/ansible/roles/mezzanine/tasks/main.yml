@@ -20,6 +20,10 @@
   synchronize:
     src: "{{ lookup('pipe', 'dirname `pwd`') }}/mezzanine_example/"
     dest: /srv/project
+- name: create /srv/bin directory
+  file:
+    path: /srv/bin
+    state: directory
 - name: copy scripts
   copy:
     src: "{{ role_path }}/files/{{ item }}"
