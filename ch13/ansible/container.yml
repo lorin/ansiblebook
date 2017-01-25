@@ -8,7 +8,8 @@ services:
     image: nginx:1.11
   mezzanine:
     image: ubuntu:xenial
-    command: [/srv/bin/gunicorn, '0.0.0.0:8000']
+    command: [/usr/local/bin/gunicorn, '0.0.0.0:8000', 'mezzanine_example.wsgi:application']
     entrypoint: [/srv/bin/entrypoint.sh]
+    working_dir: /srv/project
     expose:
       - "8000"
