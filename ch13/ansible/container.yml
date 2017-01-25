@@ -8,6 +8,7 @@ services:
     image: nginx:1.11
   mezzanine:
     image: ubuntu:xenial
-    entrypoint: [/usr/bin/entrypoint.sh]
+    command: [/srv/bin/gunicorn, '0.0.0.0:8000']
+    entrypoint: [/srv/bin/entrypoint.sh]
     expose:
       - "8000"
