@@ -30,11 +30,13 @@ services:
       - "8000"
     dev_overrides:
       links:
-        - memcached
         - postgres
+        - memcached
       depends_on:
         - postgres
+        - memcached
       environment:
+        SECRET_KEY: dummysecretkey
         DATABASE_NAME: "{{ DATABASE_NAME }}"
         DATABASE_USER: "{{ DATABASE_USER }}"
         DATABASE_PASSWORD: "{{ DATABASE_PASSWORD }}"
