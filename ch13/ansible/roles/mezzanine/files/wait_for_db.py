@@ -4,10 +4,10 @@ import psycopg2
 import sys
 import time
 
-dbname = os.environ.get("DATABASE_NAME", ""),
-user = os.environ.get("DATABASE_USER", ""),
-password = os.environ.get("DATABASE_PASSWORD", ""),
-host = os.environ.get("DATABASE_HOST", "postgres"),
+dbname = os.environ.get("DATABASE_NAME", "")
+user = os.environ.get("DATABASE_USER", "")
+password = os.environ.get("DATABASE_PASSWORD", "")
+host = os.environ.get("DATABASE_HOST", "postgres")
 port = int(os.environ.get("DATABASE_PORT", "5432"))
 
 attempts = 0
