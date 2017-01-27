@@ -19,10 +19,12 @@ services:
         - mezzanine
       volumes_from:
         - mezzanine
+      ports:
+        - "8080:80"
   mezzanine:
     image: ubuntu:xenial
     entrypoint: [/srv/bin/entrypoint.sh]
-    command: [/usr/local/bin/gunicorn, '0.0.0.0:8000', 'mezzanine_example.wsgi:application']
+    command: [/usr/local/bin/gunicorn, '-b', '0.0.0.0:8000', 'mezzanine_example.wsgi:application']
     working_dir: /srv/project
     expose:
       - "8000"
