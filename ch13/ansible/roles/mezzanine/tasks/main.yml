@@ -33,4 +33,4 @@
     - entrypoint.sh
     - setsite.py
     - setadmin.py
-    - wait_on_postgres.py
+    - wait_for_db.py

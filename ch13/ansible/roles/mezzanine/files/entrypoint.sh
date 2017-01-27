@@ -21,7 +21,7 @@ set -x
 
 if [[ $@ == *"gunicorn"* || $@ == *"runserver"* ]]; then
 	if [[ -f $MANAGE ]]; then
-        $BINDIR/wait_on_postgres.py
+        $BINDIR/wait_for_db.py
         if [[ $? == 0 ]]; then
             $MANAGE migrate --noinput
             $MANAGE collectstatic --noinput

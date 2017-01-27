@@ -3,7 +3,7 @@ import os
 
 SECRET_KEY = os.environ.get("SECRET_KEY", "")
 NEVERCACHE_KEY = os.environ.get("NEVERCACHE_KEY", "")
-ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "")
+ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "['*']")
 
 DATABASES = {
     "default": {
@@ -16,9 +16,9 @@ DATABASES = {
         # Not used with sqlite3.
         "PASSWORD": os.environ.get("DATABASE_PASSWORD", ""),
         # Set to empty string for localhost. Not used with sqlite3.
-        "HOST": os.environ.get("DATABASE_HOST", ""),
+        "HOST": os.environ.get("DATABASE_HOST", "postgres"),
         # Set to empty string for default. Not used with sqlite3.
-        "PORT": os.environ.get("DATABASE_PORT", "")
+        "PORT": os.environ.get("DATABASE_PORT", "5432")
     }
 }
 
