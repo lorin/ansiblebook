@@ -20,6 +20,8 @@
   synchronize:
     src: "{{ lookup('pipe', 'dirname `pwd`') }}/mezzanine_example/"
     dest: /srv/project
+- name: install project requirements
+  pip: requirements=/srv/project/requirements.txt
 - name: create /srv/bin directory
   file:
     path: /srv/bin
