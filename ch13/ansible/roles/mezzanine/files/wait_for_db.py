@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import os
 import psycopg2
+import sys
 import time
 
 dbname = os.environ.get("DATABASE_NAME", ""),
