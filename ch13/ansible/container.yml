@@ -1,4 +1,9 @@
 version: "2"
+defaults:
+  DATABASE_NAME: mezzanine
+  DATABASE_USER: mezzanine
+  DATABASE_PASSWORD: mezzanine
+
 services:
   memcached:
     image: ubuntu:xenial
@@ -9,6 +14,11 @@ services:
     user: daemon
   nginx:
     image: nginx:1.11
+    dev_overrides:
+      links:
+        - mezzanine
+      volumes_from:
+        - mezzanine
   mezzanine:
     image: ubuntu:xenial
     entrypoint: [/srv/bin/entrypoint.sh]
@@ -16,3 +26,21 @@ services:
     working_dir: /srv/project
     expose:
       - "8000"
+    dev_overrides:
+      links:
+        - memcached
+        - postgres
+      depends_on:
+        - postgres
+      environment:
+        DATABASE_NAME: "{{ DATABASE_NAME }}"
+        DATABASE_USER: "{{ DATABASE_USER }}"
+        DATABASE_PASSWORD: "{{ DATABASE_PASSWORD }}"
+  postgres:
+    image: postgres:9.6
+    dev_overrides:
+      environment:
+        POSTGRES_DB: "{{ DATABASE_NAME }}"
+        POSTGRES_USER: "{{ DATABASE_USER }}"
+        POSTGRES_PASSWORD: "{{ DATABASE_PASSWORD }}"
+
