@@ -3,6 +3,7 @@ defaults:
   DATABASE_NAME: mezzanine
   DATABASE_USER: mezzanine
   DATABASE_PASSWORD: mezzanine
+  ADMIN_PASSWORD: mezzanine
 
 services:
   memcached:
@@ -37,9 +38,15 @@ services:
         - memcached
       environment:
         SECRET_KEY: dummysecretkey
+        PROJECT_DIR: /srv/project
+        PROJECT_APP: mezzanine_example
+        WEBSITE_DOMAIN: localhost
+        ADMIN_PASSWORD: "{{ ADMIN_PASSWORD }}"
         DATABASE_NAME: "{{ DATABASE_NAME }}"
         DATABASE_USER: "{{ DATABASE_USER }}"
         DATABASE_PASSWORD: "{{ DATABASE_PASSWORD }}"
+      volumes:
+        - ${PWD}/static:/srv/project/static
   postgres:
     image: postgres:9.6
     dev_overrides:
