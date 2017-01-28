@@ -15,6 +15,10 @@ services:
     user: daemon
   nginx:
     image: nginx:1.11
+    command: ["nginx", "-g", "daemon off;"]
+    expose:
+      - "80"
+      - "443"
     dev_overrides:
       links:
         - mezzanine
