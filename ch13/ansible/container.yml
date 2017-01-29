@@ -28,6 +28,7 @@ services:
         - mezzanine
       ports:
         - "8080:80"
+        - "8443:443"
   mezzanine:
     image: ubuntu:xenial
     entrypoint: [/srv/bin/entrypoint.sh]
