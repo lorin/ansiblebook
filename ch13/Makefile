@@ -1,4 +1,4 @@
-.PHONY: build run stop clean
+.PHONY: build start run stop clean
 
 FLAGS=#--debug
 
@@ -7,6 +7,8 @@ build:
 
 run:
 	ansible-container run
+
+start: run
 
 stop:
 	ansible-container stop
