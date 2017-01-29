@@ -22,6 +22,8 @@ services:
     dev_overrides:
       links:
         - mezzanine
+      volumes:
+        - ${PWD}/certs:/certs
       volumes_from:
         - mezzanine
       ports:
