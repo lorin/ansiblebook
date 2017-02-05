@@ -11,4 +11,6 @@ services:
       - ghost
   ghost:
     image: ghost
+    volumes:
+      - ${PWD}/ghostdata:/var/lib/ghost
 
