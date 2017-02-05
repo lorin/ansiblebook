@@ -1,0 +1,14 @@
+version: '2'
+services:
+  nginx:
+    image: nginx-ghost
+    ports:
+      - "8000:80"
+      - "8443:443"
+    volumes:
+      - ${PWD}/certs:/certs
+    links:
+      - ghost
+  ghost:
+    image: ghost
+
