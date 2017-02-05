@@ -5,7 +5,7 @@
   tasks:
     - name: create Nginx image
       docker_image:
-        name: nginx-ghost
+        name: ansiblebook/nginx-ghost
         path: nginx
     - name: create certs
       command: >

@@ -1,10 +1,14 @@
-.PHONY: start publish
+.PHONY: start publish build
+
+publish: build
+	ansible-playbook publish.yml
+
+build:
+	ansible-playbook build.yml
 
 start:
 	ansible-playbook ghost.yml
 
-publish:
-	ansible-playbook publish.yml
 
 # Generate self-signed certs for localhost
 ssl: certs/nginx.crt certs/nginx.key
