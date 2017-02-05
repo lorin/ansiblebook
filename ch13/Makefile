@@ -1,4 +1,7 @@
-.PHONY: start publish build
+.PHONY: start publish build local
+
+local:
+	ansible-playbook publish-local.yml
 
 publish: build
 	ansible-playbook publish.yml

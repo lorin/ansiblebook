@@ -1,0 +1,20 @@
+- name: publish images to local docker registry
+  hosts: localhost
+  gather_facts: False
+  vars:
+    repo_port: 5000
+    repo: "localhost:{{repo_port}}"
+    image: ansiblebook/nginx-ghost
+  tasks:
+    - name: start a registry locally
+      docker_container:
+        name: registry
+        image: registry:2
+        ports: "{{ repo_port }}:5000"
+    - debug:
+        msg: name={{ image }} repo={{ repo }}/{{ image }}
+    - name: tag the nginx-ghost image to the repository
+      docker_image:
+        name: "{{ image }}"
+        repository: "{{ repo }}/{{ image }}"
+        push: yes
