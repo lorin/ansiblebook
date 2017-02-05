@@ -1,0 +1,9 @@
+- name: publish images to docker hub
+  hosts: localhost
+  gather_facts: False
+  tasks:
+    - name: push image up
+      docker_image:
+        name: nginx-ghost
+        repository: lorin/nginx-ghost
+        push: yes
