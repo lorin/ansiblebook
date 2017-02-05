@@ -1,4 +1,7 @@
-.PHONY: start publish build local
+.PHONY: start publish build local facts
+
+facts:
+	ansible-playbook image-facts.yml
 
 local:
 	ansible-playbook publish-local.yml
