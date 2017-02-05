@@ -1,0 +1,13 @@
+---
+- name: get exposed ports and volumes
+  hosts: localhost
+  gather_facts: False
+  vars:
+    image: ghost
+  tasks:
+    - name: get image info
+      docker_image_facts: name=ghost
+      register: ghost
+    - debug:
+        msg: "Ports: {{ ghost.images[0].Config.ExposedPorts}}"
+
