@@ -5,5 +5,5 @@
   tasks:
     - name: create Nginx image
       docker_image:
-        name: ch13-nginx
+        name: nginx-ghost
         path: nginx
