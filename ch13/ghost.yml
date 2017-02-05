@@ -7,3 +7,13 @@
       docker_image:
         name: nginx-ghost
         path: nginx
+    - name: create certs
+      command: >
+        openssl req -new -x509 -nodes
+        -out certs/nginx.crt -keyout certs/nginx.key
+        -subj '/CN=localhost' -days 3650
+        creates=certs/nginx.crt
+    - name: bring up services
+      docker_service:
+        project_src: .
+        state: present
