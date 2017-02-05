@@ -1,0 +1,9 @@
+---
+- name: Run Ghost locally
+  hosts: localhost
+  gather_facts: False
+  tasks:
+    - name: create Nginx image
+      docker_image:
+        name: ch13-nginx
+        path: nginx

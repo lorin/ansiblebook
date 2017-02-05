@@ -1,4 +1,7 @@
-.PHONY: build start run stop clean
+.PHONY: start
+
+start:
+	ansible-playbook ghost.yml
 
 # Generate self-signed certs for localhost
 ssl: certs/nginx.crt certs/nginx.key
