@@ -8,6 +8,21 @@
     - name: get image info
       docker_image_facts: name=ghost
       register: ghost
-    - debug:
-        msg: "Ports: {{ ghost.images[0].Config.ExposedPorts}}"
+    - name: extract ports
+      set_fact:
+        ports: "{{ ghost.images[0].Config.ExposedPorts.keys() }}"
+    - name: we expect only one port to be exposed
+      assert:
+        that: "ports|length == 1"
+    - name: output exposed port
+      debug:
+        msg: "Exposed port: {{ ports[0] }}"
+    - name: extract volumes
+      set_fact:
+        volumes: "{{ ghost.images[0].Config.Volumes.keys() }}"
+    - name: output volumes
+      debug:
+        msg: "Volume: {{ item }}"
+      with_items: "{{ volumes }}"
+
 
