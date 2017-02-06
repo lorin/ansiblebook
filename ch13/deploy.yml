@@ -1,0 +1,15 @@
+- name: install Docker
+  hosts: all
+  become: True
+  tasks:
+    - name: install packages
+      apt: name={{ item }} update_cache=yes cache_valid_time=3600
+      with_items:
+        - apt-transport-https
+        - ca-certificates
+        - curl
+        - linux-image-extra-virtual-{{ ansible_kernel }}
+        - linux-image-extra-virtual
+
+
+
