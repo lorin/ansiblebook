@@ -7,9 +7,21 @@
       with_items:
         - apt-transport-https
         - ca-certificates
-        - curl
         - linux-image-extra-virtual-{{ ansible_kernel }}
         - linux-image-extra-virtual
+        - software-properties-common
+    - name: add Docker's GPG key
+      apt_key:
+          id: 58118E89F3A912897C070ADBF76221572C52609D
+          url: https://yum.dockerproject.org/gpg
+    - name: add Docker stable repository
+      apt_repository:
+        repo: deb https://apt.dockerproject.org/repo/ubuntu-{{ansible_distribution_release}} main
+        update_cache: yes
+    - name: install Docker
+      apt: name=docker-engine
+
+
 
 
 
