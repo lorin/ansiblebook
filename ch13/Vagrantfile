@@ -1,0 +1,13 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant.configure("2") do |config|
+    config.vm.define "postgres" do |postgres|
+        postgres.vm.box = "trusty"
+        postgres.vm.network "private_network", ip: "192.168.33.9"
+    end
+    config.vm.define "ghost" do |ghost|
+        ghost.vm.box = "trusty"
+        ghost.vm.network "private_network", ip: "192.168.33.10"
+    end
+end
