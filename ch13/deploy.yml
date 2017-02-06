@@ -1,5 +1,5 @@
 - name: install Docker
-  hosts: ghost
+  hosts: postgres
   become: True
   tasks:
     - name: install packages
@@ -10,6 +10,7 @@
         - linux-image-extra-{{ ansible_kernel }}
         - linux-image-extra-virtual
         - software-properties-common
+        - python-pip
     - name: add Docker's GPG key
       apt_key:
           id: 58118E89F3A912897C070ADBF76221572C52609D
@@ -20,8 +21,35 @@
         update_cache: yes
     - name: install Docker
       apt: name=docker-engine
+    - name: install docker-py
+      pip: name=docker-py
 
 
-
-
-
+- name: deploy postgres
+  hosts: postgres
+  become: True
+  tasks:
+    - name: create a docker user
+      user: name=docker
+      register: docker_user
+    - name: define data_dir variable
+      set_fact: data_dir="{{ docker_user.home }}/pgdata"
+    - name: create data dir with correct ownership
+      file:
+        path: "{{ data_dir }}"
+        state: directory
+        owner: docker
+    - name: start postgres container
+      docker_container:
+        name: ghost_postgres
+        user: "{{ docker_user.uid }}:{{ docker_user.group }}"
+        image: postgres:9.6
+        ports:
+          - "0.0.0.0:5432:5432"
+        volumes:
+          - "{{ data_dir }}:/var/lib/postgresql/data"
+          - "/etc/passwd:/etc/passwd:ro"
+        env:
+          POSTGRES_USER: "{{ database_user }}"
+          POSTGRES_PASSWORD: "{{ database_password }}"
+          POSTGRES_DB: "{{ database_name }}"
