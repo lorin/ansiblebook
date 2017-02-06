@@ -1,5 +1,5 @@
 - name: install Docker
-  hosts: all
+  hosts: ghost
   become: True
   tasks:
     - name: install packages
@@ -7,7 +7,7 @@
       with_items:
         - apt-transport-https
         - ca-certificates
-        - linux-image-extra-virtual-{{ ansible_kernel }}
+        - linux-image-extra-{{ ansible_kernel }}
         - linux-image-extra-virtual
         - software-properties-common
     - name: add Docker's GPG key
@@ -16,7 +16,7 @@
           url: https://yum.dockerproject.org/gpg
     - name: add Docker stable repository
       apt_repository:
-        repo: deb https://apt.dockerproject.org/repo/ubuntu-{{ansible_distribution_release}} main
+        repo: deb https://apt.dockerproject.org/repo/ ubuntu-{{ansible_distribution_release}} main
         update_cache: yes
     - name: install Docker
       apt: name=docker-engine
