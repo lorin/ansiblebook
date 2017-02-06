@@ -1,0 +1,8 @@
+[all:vars]
+ansible_ssh_user=vagrant
+
+[postgres]
+192.168.33.9 ansible_ssh_private_key_file=.vagrant/machines/postgres/virtualbox/private_key
+
+[ghost]
+192.168.33.10 ansible_ssh_private_key_file=.vagrant/machines/ghost/virtualbox/private_key
