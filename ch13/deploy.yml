@@ -1,5 +1,5 @@
 - name: install Docker
-  hosts: postgres
+  hosts: all
   become: True
   tasks:
     - name: install packages
@@ -55,7 +55,7 @@
   gather_facts: False
   vars:
     url: "https://{{ ansible_host }}"
-    database_host: "{{ groups[postgres][0] }}"
+    database_host: "{{ groups['postgres'][0] }}"
     data_dir: /data/ghostdata
     certs_dir: /data/certs
   tasks:
@@ -63,8 +63,8 @@
       file:
         path: "{{ data_dir }}"
         state: directory
-    - name: copy the config file
-      template: src=templates/config.js.j2 dest={{ datadir}}/config.js
+    - name: generate the config file
+      template: src=templates/config.js.j2 dest={{ data_dir }}/config.js
     - name: start ghost container
       docker_container:
         name: ghost
@@ -85,7 +85,6 @@
       docker_container:
         name: nginx_ghost
         image: ansiblebook/nginx-ghost
-        command: npm start --production
         links:
           - ghost
         ports:
