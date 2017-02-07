@@ -7,6 +7,7 @@
       docker_image:
         name: ansiblebook/nginx-ghost
         path: nginx
+        force: yes
     - name: create certs
       command: >
         openssl req -new -x509 -nodes
