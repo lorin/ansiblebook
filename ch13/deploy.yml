@@ -58,7 +58,10 @@
     database_host: "{{ groups['postgres'][0] }}"
     data_dir: /data/ghostdata
     certs_dir: /data/certs
+    net_name: ghostnet
   tasks:
+    - name: create network
+      docker_network: "name={{ net_name }}"
     - name: create ghostdata directory
       file:
         path: "{{ data_dir }}"
@@ -71,6 +74,8 @@
         image: ghost
         volumes:
           - "{{ data_dir }}:/var/lib/ghost"
+        networks:
+          - name: "{{ net_name }}"
     - name: create certs directory
       file:
         path: "{{ certs_dir }}"
@@ -85,8 +90,10 @@
       docker_container:
         name: nginx_ghost
         image: ansiblebook/nginx-ghost
-        links:
-          - ghost
+        networks:
+          - name: "{{ net_name }}"
+            links:
+              - ghost
         ports:
           - "0.0.0.0:80:80"
           - "0.0.0.0:443:443"
