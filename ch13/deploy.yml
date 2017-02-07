@@ -48,3 +48,11 @@
           POSTGRES_USER: "{{ database_user }}"
           POSTGRES_PASSWORD: "{{ database_password }}"
           POSTGRES_DB: "{{ database_name }}"
+
+- name: deploy ghost
+  hosts: ghost
+  become: True
+  gather_facts: False
+  tasks:
+    - name: copy the config file
+      template: 
