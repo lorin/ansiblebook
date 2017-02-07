@@ -38,7 +38,7 @@
         state: directory
     - name: start postgres container
       docker_container:
-        name: ghost_postgres
+        name: postgres_ghost
         image: postgres:9.6
         ports:
           - "0.0.0.0:5432:5432"
@@ -53,6 +53,43 @@
   hosts: ghost
   become: True
   gather_facts: False
+  vars:
+    url: "https://{{ ansible_host }}"
+    database_host: "{{ groups[postgres][0] }}"
+    data_dir: /data/ghostdata
+    certs_dir: /data/certs
   tasks:
+    - name: create ghostdata directory
+      file:
+        path: "{{ data_dir }}"
+        state: directory
     - name: copy the config file
-      template: 
+      template: src=templates/config.js.j2 dest={{ datadir}}/config.js
+    - name: start ghost container
+      docker_container:
+        name: ghost
+        image: ghost
+        volumes:
+          - "{{ data_dir }}:/var/lib/ghost"
+    - name: create certs directory
+      file:
+        path: "{{ certs_dir }}"
+        state: directory
+    - name: generate tls certs
+      command: >
+        openssl req -new -x509 -nodes
+        -out "{{ certs_dir }}/nginx.crt" -keyout "{{ certs_dir }}/nginx.key"
+        -subj "/CN={{ ansible_host}}" -days 3650
+        creates=certs/nginx.crt
+    - name: start nginx container
+      docker_container:
+        name: nginx_ghost
+        image: ansiblebook/nginx-ghost
+        command: npm start --production
+        links:
+          - ghost
+        ports:
+          - "0.0.0.0:80:80"
+          - "0.0.0.0:443:443"
+        volumes:
+          - "{{ certs_dir }}:/certs"
