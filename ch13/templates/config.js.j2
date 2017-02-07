@@ -11,14 +11,17 @@ config = {
     // When running Ghost in the wild, use the production environment.
     // Configure your URL and mail settings here
     production: {
-        url: 'http://localhost:8000',
+        url: '{{ url }}',
         mail: {},
         database: {
-            client: 'sqlite3',
+            client: 'pg',
             connection: {
-                filename: path.join(process.env.GHOST_CONTENT, '/data/ghost.db')
-            },
-            debug: false
+                host     : '{{ database_host }}',
+                user     : '{{ database_user }}',
+                password : '{{ database_pasword }}',
+                database : '{{ database_name }}',
+                charset  : 'utf8'
+            }
         },
 
         server: {
