@@ -1,5 +1,5 @@
 ---
-- name: Run Ghost locally
+- name: Create Nginx image
   hosts: localhost
   gather_facts: False
   tasks:
@@ -7,3 +7,4 @@
       docker_image:
         name: ansiblebook/nginx-ghost
         path: nginx
+        force: yes

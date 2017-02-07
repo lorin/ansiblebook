@@ -1,10 +1,7 @@
-.PHONY: start publish build local facts deploy ghost
-
-ghost:
-	ansible-playbook deploy.yml -l ghost
+.PHONY: start publish build local facts deploy
 
 deploy:
-	ansible-playbook deploy.yml
+	ansible-playbook deploy.yml -l ghost --start-at-task 'create network'
 
 facts:
 	ansible-playbook image-facts.yml
