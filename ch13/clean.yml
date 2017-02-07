@@ -1,0 +1,19 @@
+- name: remove all ghost containers and networks
+  hosts: ghost
+  become: True
+  gather_facts: False
+  tasks:
+    - name: remove containers
+      docker_container:
+        name: "{{ item }}"
+        state: absent
+      with_items:
+        - nginx_ghost
+        - ghost
+    - name: remove network
+      docker_network:
+        name: ghostnet
+        state: absent
+
+
+

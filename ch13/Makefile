@@ -21,6 +21,8 @@ build:
 start:
 	ansible-playbook ghost.yml
 
+clean:
+	ansible-playbook clean.yml
 
 # Generate self-signed certs for localhost
 ssl: certs/nginx.crt certs/nginx.key
