@@ -91,6 +91,7 @@
       docker_container:
         name: nginx_ghost
         image: ansiblebook/nginx-ghost
+        pull: yes
         networks:
           - name: "{{ net_name }}"
         ports:
