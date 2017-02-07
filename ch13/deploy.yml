@@ -30,28 +30,20 @@
   become: True
   gather_facts: False
   vars:
-    docker_user: postgres
+    data_dir: /data/pgdata
   tasks:
-    - name: create the user to run postgres container
-      user: name={{ docker_user }}
-      register: docker_user_info
-    - name: define data_dir variable
-      set_fact: data_dir="{{ docker_user_info.home }}/pgdata"
     - name: create data dir with correct ownership
       file:
         path: "{{ data_dir }}"
         state: directory
-        owner: "{{ docker_user }}"
     - name: start postgres container
       docker_container:
         name: ghost_postgres
-        user: "{{ docker_user_info.uid }}:{{ docker_user_info.group }}"
         image: postgres:9.6
         ports:
           - "0.0.0.0:5432:5432"
         volumes:
           - "{{ data_dir }}:/var/lib/postgresql/data"
-          - "/etc/passwd:/etc/passwd:ro"
         env:
           POSTGRES_USER: "{{ database_user }}"
           POSTGRES_PASSWORD: "{{ database_password }}"
