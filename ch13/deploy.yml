@@ -72,6 +72,7 @@
       docker_container:
         name: ghost
         image: ghost
+        command: npm start --production
         volumes:
           - "{{ data_dir }}:/var/lib/ghost"
         networks:
