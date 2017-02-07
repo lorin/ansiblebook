@@ -4,6 +4,7 @@ services:
     image: ansiblebook/nginx-ghost
     ports:
       - "8443:443"
+      - "8000:80"
     volumes:
       - ${PWD}/certs:/certs
     links:
