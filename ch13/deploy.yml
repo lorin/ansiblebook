@@ -92,8 +92,6 @@
         image: ansiblebook/nginx-ghost
         networks:
           - name: "{{ net_name }}"
-            links:
-              - ghost
         ports:
           - "0.0.0.0:80:80"
           - "0.0.0.0:443:443"
