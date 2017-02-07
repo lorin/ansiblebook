@@ -31,7 +31,7 @@ config = {
     development: {
         // The url to use when providing links to the site, E.g. in RSS and email.
         // Change this to your Ghost blog's published URL.
-        url: 'http://localhost:8000',
+        url: 'https://localhost:8443',
 
         // Example refferer policy
         // Visit https://www.w3.org/TR/referrer-policy/ for instructions
