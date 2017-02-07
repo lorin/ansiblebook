@@ -6,17 +6,20 @@ deploy:
 facts:
 	ansible-playbook image-facts.yml
 
+start: local
+
+stop:
+	docker-compose kill
+	docker-compose rm --forc
+
 local:
-	ansible-playbook publish-local.yml
+	ansible-playbook local.yml
 
 publish: build
 	ansible-playbook publish.yml
 
 build:
 	ansible-playbook build.yml
-
-start:
-	ansible-playbook ghost.yml
 
 clean:
 	ansible-playbook clean.yml
