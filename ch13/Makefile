@@ -1,4 +1,7 @@
-.PHONY: start publish build local facts deploy
+.PHONY: start publish build local facts deploy ghost
+
+ghost:
+	ansible-playbook deploy.yml -l ghost
 
 deploy:
 	ansible-playbook deploy.yml
