@@ -1,5 +1,5 @@
 - name: install Docker
-  hosts: all
+  hosts: dockerhosts
   become: True
   tasks:
     - name: install packages

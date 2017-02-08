@@ -1,8 +1,12 @@
-[all:vars]
+[dockerhosts:vars]
 ansible_ssh_user=vagrant
 database_name=ghost
 database_user=ghost
 database_password=mysupersecretpassword
+
+[dockerhosts:children]
+postgres
+ghost
 
 [postgres]
 192.168.33.9 ansible_ssh_private_key_file=.vagrant/machines/postgres/virtualbox/private_key
