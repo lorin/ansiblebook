@@ -1,0 +1,6 @@
+- name: trivial playbook to test vagrant
+  hosts: all
+  gather_facts: False
+  tasks:
+    - name: ping
+      ping:
