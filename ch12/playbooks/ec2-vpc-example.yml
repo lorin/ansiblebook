@@ -12,8 +12,9 @@
   - name: create a vpc
     ec2_vpc_net:
       region: "{{ region }}"
+      name: book
       cidr_block: 10.0.0.0/16
-      tags: { Name: book, env: production }
+      tags: {env: production }
     register: result
   - set_fact: "vpc_id={{ result.vpc.id }}"
   - name: add gateway
@@ -27,10 +28,7 @@
       cidr: "{{ cidrs.web }}"
       tags: { env: production, tier: web}
     register: web_subnet
-  - debug: "var=web_subnet"
-  - assert:
-      that: "False"
-  - set_fact: "web_subnet_id={{ web_subnet.vpc.id }}"
+  - set_fact: "web_subnet_id={{ web_subnet.subnet.id }}"
   - name: create db subnet
     ec2_vpc_subnet:
       region: "{{ region }}"
@@ -108,7 +106,7 @@
       instance_tags: { Name: book, type: web, env: production }
       exact_count: "{{ count }}"
       count_tag: { type: web }
-      vpc_subnet_id: "{{ vpc.subnets[0].id }}"
+      vpc_subnet_id: "{{ web_subnet_id }}"
       wait: yes
     register: ec2
   - name: add the instance to web and production groups
