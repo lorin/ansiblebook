@@ -1,0 +1,40 @@
+- name: create security groups
+  hosts: localhost
+  gather_facts: False
+  vars:
+    region: us-west-1
+  tasks:
+    - name: web security group
+      ec2_group:
+        region: "{{ region }}"
+        name: web
+        description: allow http and https access
+        rules:
+          - proto: tcp
+            from_port: 80
+            to_port: 80
+            cidr_ip: 0.0.0.0/0
+          - proto: tcp
+            from_port: 443
+            to_port: 443
+            cidr_ip: 0.0.0.0/0
+
+    - name: ssh security group
+      ec2_group:
+        region: "{{ region }}"
+        name: ssh
+        description: allow ssh access
+        rules:
+          - proto: tcp
+            from_port: 22
+            to_port: 22
+            cidr_ip: 0.0.0.0/0
+
+    - name: outbound group
+      ec2_group:
+        region: "{{ region }}"
+        name: outbound
+        description: allow outbound connections to the internet
+        rules_egress:
+          - proto: all
+            cidr_ip: 0.0.0.0/0
