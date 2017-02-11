@@ -1,0 +1,30 @@
+---
+- name: create vpc
+  hosts: localhost
+  gather_facts: False
+  tasks:
+  - name: create a vpc
+    ec2_vpc:
+      internet_gateway: True
+      region: us-west-1
+      resource_tags: { Name: "Book example", env: production }
+      cidr_block: 10.0.0.0/16
+      subnets:
+        - cidr: 10.0.0.0/24
+          resource_tags:
+            env: production
+            tier: web
+        - cidr: 10.0.1.0/24
+          resource_tags:
+            env: production
+            tier: db
+      route_tables:
+        - subnets:
+          - 10.0.0.0/24
+          - 10.0.1.0/24
+          routes:
+          - dest: 0.0.0.0/0
+            gw: igw
+    register: vpc
+  - name: print out vpc
+    debug: var=vpc
