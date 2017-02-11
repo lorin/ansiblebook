@@ -4,7 +4,7 @@
   tasks:
     - name: find the image
       ec2_ami_find:
-        name: "ubuntu/images/ebs/ubuntu-trusty-14.04-amd64-server-*"
+        name: "ubuntu/images/ebs-ssd/ubuntu-xenial-16.04-amd64-server-*"
         sort: name
         sort_order: descending
         sort_end: 1
