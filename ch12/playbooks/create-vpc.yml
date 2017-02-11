@@ -12,7 +12,37 @@
         cidr_block: 10.0.0.0/16
         tags:
           env: production
-      register: vpc
-    - debug: var=vpc
-
-
+      register: result
+    - set_fact: "vpc_id={{ result.vpc.id }}"
+    - name: add gateway
+      ec2_vpc_igw:
+        region: "{{ region }}"
+        vpc_id: "{{ vpc_id }}"
+    - name:  create web subnet
+      ec2_vpc_subnet:
+        region: "{{ region }}"
+        vpc_id: "{{ vpc_id }}"
+        cidr: 10.0.0.0/24
+        tags:
+          env: production
+          tier: web
+    - name: create db subnet
+      ec2_vpc_subnet:
+        region: "{{ region }}"
+        vpc_id: "{{ vpc_id }}"
+        cidr: 10.0.1.0/24
+        tags:
+          env: production
+          tier: db
+    - name: set routes
+      ec2_vpc_route_table:
+        region: "{{ region }}"
+        vpc_id: "{{ vpc_id }}"
+        tags:
+          purpose: permit-outbound
+        subnets:
+          - 10.0.0.0/24
+          - 10.0.1.0/24
+        routes:
+          - dest: 0.0.0.0/0
+            gateway_id: igw
