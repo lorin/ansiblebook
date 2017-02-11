@@ -8,6 +8,7 @@
         sort: name
         sort_order: descending
         sort_end: 1
+        no_result_action: fail
       register: ami
     - name: output image info
       debug: var=ami
