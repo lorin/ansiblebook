@@ -2,36 +2,55 @@
 - name: launch webservers into a specific vpc
   hosts: localhost
   vars:
+    region: us-west-1
     instance_type: t2.micro
     count: 1
-    region: us-west-1
+    cidrs:
+      web: 10.0.0.0/24
+      db: 10.0.1.0/24
   tasks:
   - name: create a vpc
-    ec2_vpc:
+    ec2_vpc_net:
       region: "{{ region }}"
-      internet_gateway: True
-      resource_tags: { Name: book, env: production }
       cidr_block: 10.0.0.0/16
+      tags: { Name: book, env: production }
+    register: result
+  - set_fact: "vpc_id={{ result.vpc.id }}"
+  - name: add gateway
+    ec2_vpc_igw:
+      region: "{{ region }}"
+      vpc_id: "{{ vpc_id }}"
+  - name: create web subnet
+    ec2_vpc_subnet:
+      region: "{{ region }}"
+      vpc_id: "{{ vpc_id }}"
+      cidr: "{{ cidrs.web }}"
+      tags: { env: production, tier: web}
+    register: web_subnet
+  - debug: "var=web_subnet"
+  - assert:
+      that: "False"
+  - set_fact: "web_subnet_id={{ web_subnet.vpc.id }}"
+  - name: create db subnet
+    ec2_vpc_subnet:
+      region: "{{ region }}"
+      vpc_id: "{{ vpc_id }}"
+      cidr: "{{ cidrs.db }}"
+      tags: { env: production, tier: db}
+  - name: add routing table
+    ec2_vpc_route_table:
+      region: "{{ region }}"
+      vpc_id: "{{ vpc_id }}"
+      tags:
+        purpose: permit-outbound
       subnets:
-        - cidr: 10.0.0.0/24
-          resource_tags:
-            env: production
-            tier: web
-        - cidr: 10.0.1.0/24
-          resource_tags:
-            env: production
-            tier: db
-      route_tables:
-        - subnets:
-          - 10.0.0.0/24
-          - 10.0.1.0/24
-          routes:
-          - dest: 0.0.0.0/0
-            gw: igw
-    register: vpc
-  - set_fact: vpc_id={{ vpc.vpc_id }}
+        - "{{ cidrs.web }}"
+        - "{{ cidrs.db }}"
+      routes:
+        - dest: 0.0.0.0/0
+          gateway_id: igw
   - name: set ec2 keypair
-    ec2_key: name=mykey key_material="{{ item }}"
+    ec2_key: "name=mykey key_material={{ item }}"
     with_file: ~/.ssh/id_rsa.pub
   - name: web security group
     ec2_group:
@@ -68,12 +87,19 @@
       rules_egress:
         - proto: all
           cidr_ip: 0.0.0.0/0
-  - name: Get the ubuntu trusty AMI
-    ec2_ami_search: distro=ubuntu release=trusty virt=hvm region={{ region }}
+  - name: Get the ubuntu xenial ebs ssd AMI
+    ec2_ami_find:
+      name: "ubuntu/images/ebs-ssd/ubuntu-xenial-16.04-amd64-server-*"
+      region: "{{ region }}"
+      sort: name
+      sort_order: descending
+      sort_end: 1
+      no_result_action: fail
     register: ubuntu_image
+  - set_fact: "ami={{ ubuntu_image.results[0].ami_id }}"
   - name: start the instances
     ec2:
-      image: "{{ ubuntu_image.ami }}"
+      image: "{{ ami }}"
       region: "{{ region }}"
       instance_type: "{{ instance_type }}"
       assign_public_ip: True
@@ -82,7 +108,7 @@
       instance_tags: { Name: book, type: web, env: production }
       exact_count: "{{ count }}"
       count_tag: { type: web }
-      vpc_subnet_id: "{{ vpc.subnets[0].id}}"
+      vpc_subnet_id: "{{ vpc.subnets[0].id }}"
       wait: yes
     register: ec2
   - name: add the instance to web and production groups
@@ -96,6 +122,6 @@
 
 - name: configure webservers
   hosts: web:&production
-  sudo: True
+  become: True
   roles:
     - web
