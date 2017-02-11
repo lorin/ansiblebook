@@ -87,7 +87,7 @@
           cidr_ip: 0.0.0.0/0
   - name: Get the ubuntu xenial ebs ssd AMI
     ec2_ami_find:
-      name: "ubuntu/images/ebs-ssd/ubuntu-xenial-16.04-amd64-server-*"
+      name: "ubuntu/images/hvm-ssd/ubuntu-xenial-16.04-amd64-server-*"
       region: "{{ region }}"
       sort: name
       sort_order: descending
