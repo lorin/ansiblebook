@@ -1,7 +1,7 @@
 .PHONY: image vpc
 
 vpc:
-	ansible-playbook create-vpc.yml
+	ansible-playbook ec2-vpc-example.yml
 
 image:
 	ansible-playbook image.yml
