@@ -1,0 +1,11 @@
+- name: find xenial image
+  hosts: localhost
+  gather_facts: False
+  tasks:
+    - name: find the image
+      ec2_ami_find:
+        name: "ubuntu/images/ebs/ubuntu/xenial-16.04-amd64-server-*"
+      register: ami
+    - name: output image info
+      debug: var=ami
+
