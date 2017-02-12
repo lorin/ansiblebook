@@ -52,7 +52,7 @@
     with_file: ~/.ssh/id_rsa.pub
   - name: web security group
     ec2_group:
-      name: vpc-web
+      name: web
       region: "{{ region }}"
       description: allow http and https access
       vpc_id: "{{ vpc_id }}"
@@ -67,7 +67,7 @@
           cidr_ip: 0.0.0.0/0
   - name: ssh security group
     ec2_group:
-      name: vpc-ssh
+      name: ssh
       region: "{{ region }}"
       description: allow ssh access
       vpc_id: "{{ vpc_id }}"
@@ -78,7 +78,7 @@
           cidr_ip: 0.0.0.0/0
   - name: outbound security group
     ec2_group:
-      name: vpc-outbound
+      name: outbound
       description: allow outbound connections to the internet
       region: "{{ region }}"
       vpc_id: "{{ vpc_id }}"
@@ -102,7 +102,7 @@
       instance_type: "{{ instance_type }}"
       assign_public_ip: True
       key_name: mykey
-      group: [vpc-web, vpc-ssh, vpc-outbound]
+      group: [web, ssh, outbound]
       instance_tags: { Name: book, type: web, env: production }
       exact_count: "{{ count }}"
       count_tag: { type: web }
