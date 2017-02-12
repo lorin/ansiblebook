@@ -3,7 +3,7 @@
     {
       "type": "amazon-ebs",
       "region": "us-west-1",
-      "source_ami": "ami-50120b15",
+      "source_ami": "ami-79df8219",
       "instance_type": "t2.micro",
       "ssh_username": "ubuntu",
       "ami_name": "web-nginx-{{timestamp}}",
@@ -25,7 +25,7 @@
       "type": "ansible-local",
       "playbook_file": "web-ami.yml",
       "role_paths": [
-        "/Users/lorinhochstein/dev/ansiblebook/ch12/playbooks/roles/web"
+        "../playbooks/roles/web"
       ]
     }
   ]
