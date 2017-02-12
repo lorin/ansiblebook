@@ -2,7 +2,7 @@
   hosts: localhost
   gather_facts: False
   tasks:
-    - name: start the instance
+    - name: start a xenial instance from a known ami
       ec2:
         region: us-west-1
         image: ami-42ffa322
