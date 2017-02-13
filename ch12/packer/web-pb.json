@@ -1,0 +1,30 @@
+{
+  "builders": [
+    {
+      "type": "amazon-ebs",
+      "region": "us-west-1",
+      "source_ami": "ami-79df8219",
+      "instance_type": "t2.micro",
+      "ssh_username": "ubuntu",
+      "ami_name": "web-nginx-{{timestamp}}",
+      "tags": {
+        "Name": "web-nginx"
+      }
+    }
+  ],
+  "provisioners": [
+    {
+      "type": "shell",
+      "inline": [
+        "sleep 30",
+        "sudo apt-get update",
+        "sudo apt-get install -y ansible"
+      ]
+    },
+    {
+      "type": "ansible-local",
+      "playbook_file": "web-ami-local.yml",
+      "playbook_dir": "../playbooks"
+    }
+  ]
+}
