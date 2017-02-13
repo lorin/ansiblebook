@@ -2,4 +2,3 @@ localhost ansible_connection=local
 [web:children]
 tag_type_web
 
-[tag_type_web]
