@@ -1,0 +1,7 @@
+---
+- name: a playbook that fails
+  strategy: debug
+  hosts: localhost
+  tasks:
+    - name: try to apt install a package
+      apt: name=foo
