@@ -1,0 +1,9 @@
+---
+- name: remove default config
+  file:
+    path: /etc/nginx/conf.d/default.conf
+    state: absent
+- name: add ghost config
+  copy:
+    src: ghost.conf
+    dest: /etc/nginx/conf.d/ghost.conf
