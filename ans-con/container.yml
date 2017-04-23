@@ -7,7 +7,7 @@ settings:
   # The Conductor container does the heavy lifting, and provides a portable
   # Python runtime for building your target containers. It should be derived
   # from the same distribution as you're building your target containers with.
-  conductor_base: centos:7
+  conductor_base: debian:jessie
 
   # When using the k8s or openshift engines, use the following to authorize with the API.
   # Values set here will be passed to the Ansible modules. Any file paths will be mounted
@@ -38,7 +38,11 @@ settings:
   #  description:
   #  display_name:
 
-services: {}
+services:
+  ac-nginx:
+    from: nginx
+    roles:
+      - ghost-nginx
   # Add your containers here, specifying the base image you want to build from
   # For example:
   #
