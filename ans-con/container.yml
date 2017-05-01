@@ -6,4 +6,7 @@ services:
     from: nginx
     roles:
       - ghost-nginx
-registries: {}
+registries:
+  docker:
+    url: https://registry.hub.docker.com
+    namespace: ansiblebook
