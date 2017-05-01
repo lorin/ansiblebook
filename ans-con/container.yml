@@ -6,6 +6,17 @@ services:
     from: nginx
     roles:
       - ghost-nginx
+    ports:
+      - "8443:443"
+      - "8000:80"
+    volumes:
+      - ${PWD}/certs:/certs
+    links:
+      - ghost
+  ghost:
+    from: ghost
+    volumes:
+      - ${PWD}/ghostdata:/var/lib/ghost
 registries:
   docker:
     namespace: ansiblebook
