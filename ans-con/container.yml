@@ -8,5 +8,8 @@ services:
       - ghost-nginx
 registries:
   docker:
-    url: https://registry.hub.docker.com
     namespace: ansiblebook
+    url: https://index.docker.io/v1/
+  quay:
+    namespace: ansiblebook
+    url: https://quay.io
