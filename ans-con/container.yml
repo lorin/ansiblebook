@@ -4,19 +4,22 @@ settings:
 services:
   ac-nginx:
     from: nginx
+    command: [nginx, -g, daemon off;]
     roles:
       - ghost-nginx
     ports:
       - "8443:443"
       - "8000:80"
-    volumes:
-      - ${PWD}/certs:/certs
-    links:
-      - ghost
+    dev_overrides:
+      volumes:
+        - $PWD/certs:/certs
+      links:
+        - ghost
   ghost:
     from: ghost
-    volumes:
-      - ${PWD}/ghostdata:/var/lib/ghost
+    dev_overrides:
+      volumes:
+        - $PWD/ghostdata:/var/lib/ghost
 registries:
   docker:
     namespace: ansiblebook
