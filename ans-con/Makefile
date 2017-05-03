@@ -1,4 +1,4 @@
-.PHONY: build push run
+.PHONY: build push run clean
 
 run:
 	ansible-container run
@@ -8,3 +8,7 @@ build:
 
 push:
 	ansible-container push
+
+clean:
+	ansible-container destroy
+	rm -rf ansible-deployment ghostdata
