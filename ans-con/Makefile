@@ -3,6 +3,9 @@
 run:
 	ansible-container run
 
+stop:
+	ansible-container stop
+
 build:
 	ansible-container build
 
