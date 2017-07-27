@@ -1,4 +1,4 @@
-# Ansible: Up and Running code samples
+# Ansible: Up and Running (2nd edition) code samples
 
 This repository contains code samples from [Ansible: Up and
 Running](http://ansiblebook.com), organized by book chapter.
