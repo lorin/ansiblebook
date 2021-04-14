@@ -1,0 +1,44 @@
+---
+
+- name: copy setup_bundle from ~/Downloads
+  copy:
+    src: "~/Downloads/{{ setup_bundle }}"
+    dest: '~'
+    mode: 0644
+  tags:
+    - tower
+
+- name: unarchive setup_bundle
+  unarchive:
+    remote_src: true
+    src: "~/{{ setup_bundle }}"
+    dest: "/tmp"
+    creates: "/tmp/{{ tower_name }}"
+  tags:
+    - tower
+
+- name: create /var/log/tower directory
+  file:
+    path: /var/log/tower
+    mode: 0755
+    state: directory
+  tags:
+    - tower
+
+- name: place inventory file for setup.sh
+  template:
+    src: inventory.j2
+    dest: "/tmp/{{ tower_name }}/inventory"
+    mode: 0644
+  tags:
+    - tower
+    - setup
+
+- name: running Tower setup.sh, time for a 10 minute break?
+  async: 3600
+  poll: 60
+  command: bash -lc "cd /tmp/{{ tower_name }} && bash ./setup.sh"
+  when: role == 'primary'
+  tags:
+    - tower
+    - setup

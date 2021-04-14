@@ -1,0 +1,15 @@
+#!/usr/bin/env ansible-playbook
+---
+
+- hosts: all:!localhost
+  become: true
+  gather_facts: true
+  roles:
+    - {role: base_common, tags: common}
+    - {role: ssh_keys, tags: ssh_keys}
+
+- hosts: tower
+  become: true
+  gather_facts: true
+  roles:
+    - {role: tower, tags: tower}
