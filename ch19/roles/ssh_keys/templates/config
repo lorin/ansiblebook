@@ -1,0 +1,3 @@
+CheckHostIP no
+IdentityFile ~/.ssh/{{ ssh_key_name }}_{{ ssh_key_type }}
+StrictHostKeyChecking no
