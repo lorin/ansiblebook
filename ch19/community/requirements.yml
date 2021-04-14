@@ -1,0 +1,27 @@
+---
+# requirements.yml for community content on automationhub
+collections:
+  # Install collections from Ansible Galaxy.
+  - name: ansible.windows
+    source: https://galaxy.ansible.com
+
+  - name: ansible.utils
+    source: https://galaxy.ansible.com
+
+  - name: awx.awx
+    source: https://galaxy.ansible.com
+
+  - name: community.crypto
+    source: https://galaxy.ansible.com
+
+  - name: community.docker
+    source: https://galaxy.ansible.com
+
+  - name: community.general
+    source: https://galaxy.ansible.com
+
+  - name: community.kubernetes
+    source: https://galaxy.ansible.com
+
+  - name: operator_sdk.util
+    source: https://galaxy.ansible.com
