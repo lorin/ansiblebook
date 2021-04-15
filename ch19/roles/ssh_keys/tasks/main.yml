@@ -1,0 +1,61 @@
+---
+
+- name: create /root/.ssh directory
+  file:
+    dest: /root/.ssh
+    mode: 0700
+    owner: root
+    group: root
+    state: directory
+  tags:
+    - sshkeys
+
+- name: generate ssh-key for root without passphrase!!!
+  delegate_to: localhost
+  become: false
+  run_once: true
+  command: "ssh-keygen -f files/{{ ssh_key_name }}_{{ ssh_key_type }} -t {{ ssh_key_type }} -N '' -q -C tower"
+  args:
+    creates: "files/{{ ssh_key_name }}_{{ ssh_key_type }}"
+  tags:
+    - sshkeys
+
+- name: set ssh pub_key fact
+  set_fact:
+    pub_key: "files/{{ ssh_key_name }}_{{ ssh_key_type }}.pub"
+  tags:
+    - sshkeys
+
+- name: install authorized_keys for root
+  authorized_key:
+    user: root
+    state: present
+    key: "{{ lookup('file',pub_key)  }}"
+  tags:
+    - sshkeys
+
+- name: install private key for root
+  copy:
+    src: "files/{{ ssh_key_name }}_{{ ssh_key_type }}"
+    dest: /root/.ssh/
+    mode: 0600
+  tags:
+    - sshkeys
+
+- name: setup .ssh/config for root
+  template:
+    src: config
+    dest: /root/.ssh/config
+    mode: 0600
+    owner: root
+    group: root
+  tags:
+    - sshkeys
+
+- name: generate known host records
+  shell: ssh-keyscan -H {{ primary_machine }} {{ secondary_machine }} > /root/.ssh/known_hosts
+  #  Not idempotent
+  #  args:
+  #    creates: /root/.ssh/known_hosts
+  tags:
+    - sshkeys

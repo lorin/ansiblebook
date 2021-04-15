@@ -2,10 +2,76 @@
 # vi: set ft=ruby :
 
 Vagrant.configure("2") do |config|
-  config.vm.box = "ansible/tower"
 
-  # This may be required ot bring up the 10.42.0.42 interface
-  config.vm.provision "shell", inline: <<-SHELL
-    systemctl restart network.service
-  SHELL
-end
+  # Install required plugins
+  required_plugins = %w( vagrant-hostmanager )
+  plugin_installed = false
+  required_plugins.each do |plugin|
+    unless Vagrant.has_plugin?(plugin)
+      system "vagrant plugin install #{plugin}"
+      plugin_installed = true
+    end
+  end
+
+  # If new plugins installed, restart Vagrant process
+  if plugin_installed === true
+    exec "vagrant #{ARGV.join' '}"
+  end
+
+  # skip compiling guest additions
+  if Vagrant.has_plugin?("vagrant-vbguest")
+    config.vbguest.auto_update = false
+  end
+
+  config.vm.provider "virtualbox"
+  config.vm.box = "centos/7"
+  config.vm.box_check_update = false
+  config.ssh.forward_agent = false
+  config.ssh.insert_key = false
+
+  config.hostmanager.enabled = true
+  config.hostmanager.manage_host = false
+  config.hostmanager.manage_guest = true
+  config.hostmanager.ignore_private_ip = false
+  config.hostmanager.include_offline = true
+  # Timeouts
+  config.vm.boot_timeout = 900
+  config.vm.graceful_halt_timeout=100
+
+  N = 3
+  (1..N).each do |server_id|
+    config.vm.define "server0#{server_id}" do |server|
+      server.vm.hostname = "server0#{server_id}"
+      server.vm.provider "virtualbox" do |vb|
+        vb.name = "server0#{server_id}"
+        vb.customize ["modifyvm", :id, "--memory", 4096]
+        vb.customize ["modifyvm", :id, "--vram", "64"]
+      end
+      server.vm.network "private_network", ip: "192.168.20.1#{server_id}"
+      server.vm.synced_folder ".", "/vagrant", id: "vagrant-root", disabled: true
+
+      # Only execute once the Ansible provisioner,
+      # when all the servers are up and ready
+      if server_id == N
+        server.vm.provision :ansible do |ansible|
+          ansible.compatibility_mode = "2.0"
+          ansible.galaxy_role_file = "roles/requirements.yml"
+          ansible.galaxy_roles_path = "roles"
+          ansible.inventory_path = "inventory/vagrant.ini"
+          # Disable default limit to connect to all the servers
+          ansible.limit = "all"
+          ansible.playbook = "playbook.yml"
+          ansible.verbose = "vv"
+          ansible.groups = {
+            "database" => ["server01"],
+            "automationhub" => ["server02"],
+            "tower" => ["server03"]
+          }
+        end
+      end
+
+    end
+
+  end # N = 3
+
+end # EOF

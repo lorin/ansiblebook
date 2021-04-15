@@ -1,0 +1,5 @@
+---
+
+- src: dockpack.base_common
+  version: v0.4.0
+  name: base_common

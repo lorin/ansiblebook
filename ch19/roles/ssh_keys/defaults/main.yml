@@ -1,0 +1,4 @@
+---
+ssh_key_name: tower
+# elliptic curve crypto is supposed to be faster and stronger
+ssh_key_type: ed25519
